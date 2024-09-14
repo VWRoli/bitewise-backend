@@ -6,6 +6,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthModule } from 'src/modules/auth/auth.module';
 import { UserModule } from 'src/modules/user/user.module';
 import databaseConfig from 'src/app.development.config';
+import { IngredientModule } from 'src/modules/ingredient/ingredient.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import databaseConfig from 'src/app.development.config';
     ]),
     AuthModule,
     UserModule,
+    IngredientModule,
   ],
   controllers: [],
   providers: [

@@ -1,4 +1,5 @@
 import { IsEmail } from 'class-validator';
+import { Ingredient } from 'src/modules/ingredient/entities';
 import {
   Entity,
   Column,
@@ -6,6 +7,7 @@ import {
   UpdateDateColumn,
   PrimaryGeneratedColumn,
   DeleteDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -16,6 +18,9 @@ export class User {
   @IsEmail()
   @Column()
   email: string;
+
+  @OneToMany(() => Ingredient, (ingredient) => ingredient.user)
+  ingredients: Ingredient[];
 
   @Column()
   hash: string;
