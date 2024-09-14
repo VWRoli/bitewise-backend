@@ -1,0 +1,75 @@
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CreateUserDto, LoginUserDto } from '../dto';
+import { User } from '../entities';
+import { SALT_WORK_FACTOR } from '../auth.constants';
+import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+
+@Injectable()
+export class AuthService {
+  constructor(
+    @InjectRepository(User)
+    private repository: Repository<User>,
+    private jwt: JwtService,
+    private config: ConfigService,
+  ) {}
+
+  async signUp(dto: CreateUserDto) {
+    try {
+      const existingUser = await this.repository.findOne({
+        where: { email: dto.email },
+      });
+      if (existingUser) throw new ForbiddenException('Credentials taken');
+
+      const hash = await bcrypt.hash(dto.password, SALT_WORK_FACTOR);
+
+      const user = this.repository.create({
+        email: dto.email,
+        hash,
+      });
+
+      await this.repository.save(user);
+
+      return this.signToken(user.id, user.email);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async signIn(dto: LoginUserDto) {
+    const user = await this.repository.findOne({
+      where: { email: dto.email },
+    });
+
+    if (!user) throw new ForbiddenException('Credentials incorrect');
+
+    const pwMatches = await bcrypt.compare(dto.password, user.hash);
+
+    if (!pwMatches) throw new ForbiddenException('Credentials incorrect');
+
+    return this.signToken(user.id, user.email);
+  }
+
+  async signToken(
+    userId: number,
+    email: string,
+  ): Promise<{ access_token: string }> {
+    const payload = {
+      sub: userId,
+      email,
+    };
+
+    const secret = this.config.get('JWT_SECRET');
+
+    const expiry = this.config.get('TOKEN_EXPIRY');
+    const token = await this.jwt.signAsync(payload, {
+      expiresIn: expiry,
+      secret,
+    });
+
+    return { access_token: token };
+  }
+}
