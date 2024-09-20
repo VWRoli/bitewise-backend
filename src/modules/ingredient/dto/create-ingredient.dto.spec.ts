@@ -6,9 +6,8 @@ describe('CreateIngredientDto', () => {
   let dto: CreateIngredientDto;
 
   beforeEach(() => {
-    // Create a valid instance of the DTO
-    const stub = stubIngredient(); // Assuming stubIngredient() returns plain data
-    dto = Object.assign(new CreateIngredientDto(), stub); // Convert to DTO instance
+    const stub = stubIngredient();
+    dto = Object.assign(new CreateIngredientDto(), stub);
   });
 
   it('should validate a valid DTO', async () => {
