@@ -1,10 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString, Length, Min } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Length,
+  Min,
+} from 'class-validator';
 import {
   IsBiggerThanSaturatedFat,
   IsBiggerThanSugarAndFiber,
-} from 'src/modules/ingredient/decorator';
-import { MAX_LENGTH, MIN_LENGTH } from 'src/utils/constants';
+} from '../decorator';
+import { MAX_LENGTH, MIN_LENGTH } from '../../../utils/constants';
+import { EUnit } from '../enum';
 
 export class CreateIngredientDto {
   @IsString()
@@ -86,6 +94,21 @@ export class CreateIngredientDto {
     required: true,
   })
   readonly calories: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  @Min(0)
+  @ApiProperty({
+    example: 50,
+    description: 'Price',
+    required: false,
+  })
+  readonly price: number;
+
+  @IsNotEmpty()
+  @IsEnum(EUnit)
+  @ApiProperty({ enum: EUnit, enumName: 'EUnit', required: true })
+  readonly unit: EUnit;
 
   @IsNumber()
   @ApiProperty({ example: 1, required: true })

@@ -13,12 +13,12 @@ import {
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from '../../auth/guard';
 import { ThrottlerGuard } from '@nestjs/throttler';
-import { IngredientService } from 'src/modules/ingredient/service';
+import { IngredientService } from '../service';
 import {
   CreateIngredientDto,
   IngredientResponseDto,
   UpdateIngredientDto,
-} from 'src/modules/ingredient/dto';
+} from '../dto';
 
 @ApiTags('ingredients')
 @UseGuards(JwtGuard, ThrottlerGuard)

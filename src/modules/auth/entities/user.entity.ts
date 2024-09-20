@@ -1,5 +1,5 @@
 import { IsEmail } from 'class-validator';
-import { Ingredient } from 'src/modules/ingredient/entities';
+import { Ingredient } from '../../ingredient/entities';
 import {
   Entity,
   Column,

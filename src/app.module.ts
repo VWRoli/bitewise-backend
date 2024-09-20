@@ -3,10 +3,10 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
-import { AuthModule } from 'src/modules/auth/auth.module';
-import { UserModule } from 'src/modules/user/user.module';
-import databaseConfig from 'src/app.development.config';
-import { IngredientModule } from 'src/modules/ingredient/ingredient.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { UserModule } from './modules/user/user.module';
+import databaseConfig from './app.development.config';
+import { IngredientModule } from './modules/ingredient/ingredient.module';
 
 @Module({
   imports: [

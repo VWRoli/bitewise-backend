@@ -1,4 +1,5 @@
-import { User } from 'src/modules/auth/entities';
+import { EUnit } from '../enum';
+import { User } from '../../auth/entities';
 import {
   Column,
   CreateDateColumn,
@@ -41,6 +42,12 @@ export class Ingredient {
 
   @Column()
   calories: number;
+
+  @Column()
+  price: number;
+
+  @Column({ type: 'enum', enum: EUnit, enumName: 'EUnit' })
+  unit: EUnit;
 
   @ManyToOne(() => User, (user) => user.ingredients)
   @JoinColumn()

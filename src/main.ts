@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { initializeSwagger } from 'src/swagger/swagger.config';
+import { initializeSwagger } from './swagger';
 import helmet from 'helmet';
 import { ValidationPipe } from '@nestjs/common';
 import { json } from 'express';

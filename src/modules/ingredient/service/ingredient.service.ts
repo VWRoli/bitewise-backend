@@ -1,12 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/modules/auth/entities';
+import { User } from '../../auth/entities';
 import {
   CreateIngredientDto,
   IngredientResponseDto,
   UpdateIngredientDto,
 } from 'src/modules/ingredient/dto';
-import { Ingredient } from 'src/modules/ingredient/entities';
+import { Ingredient } from '../entities';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -36,6 +40,18 @@ export class IngredientService {
 
     if (!user) {
       throw new NotFoundException(`No User with the provided id`);
+    }
+
+    const existingIngredient = await this.repository.findOne({
+      where: {
+        user: { id: user.id },
+      },
+    });
+
+    if (existingIngredient) {
+      throw new ConflictException(
+        `You already have an ingredient with the same name currency.`,
+      );
     }
 
     const ingredient = this.repository.create(data);
