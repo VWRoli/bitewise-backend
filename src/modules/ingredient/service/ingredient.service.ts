@@ -4,22 +4,22 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../../auth/entities';
 import {
   CreateIngredientDto,
   IngredientResponseDto,
   UpdateIngredientDto,
-} from 'src/modules/ingredient/dto';
+} from '../dto';
 import { Ingredient } from '../entities';
 import { Repository } from 'typeorm';
+import { UserService } from '../../user/service';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class IngredientService {
   constructor(
     @InjectRepository(Ingredient)
     private repository: Repository<Ingredient>,
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
+    private readonly userService: UserService,
   ) {}
 
   async getAll(userId: number): Promise<IngredientResponseDto[]> {
@@ -31,38 +31,58 @@ export class IngredientService {
   }
 
   async createOne(data: CreateIngredientDto): Promise<IngredientResponseDto> {
-    //check if user exists
-    const user = await this.userRepository.findOne({
-      where: {
-        id: data.userId,
-      },
-    });
+    const user = await this.userService.validateUser(data.userId);
 
-    if (!user) {
-      throw new NotFoundException(`No User with the provided id`);
-    }
+    await this.checkIfIngredientExists(data);
 
-    const existingIngredient = await this.repository.findOne({
-      where: {
-        user: { id: user.id },
-      },
-    });
+    const ingredient = this.repository.create({ ...data, user });
 
-    if (existingIngredient) {
-      throw new ConflictException(
-        `You already have an ingredient with the same name currency.`,
-      );
-    }
+    const savedIngredient = await this.repository.save(ingredient);
 
-    const ingredient = this.repository.create(data);
-
-    return await this.repository.save(ingredient);
+    return plainToClass(IngredientResponseDto, savedIngredient);
   }
 
   async updateOne(
     id: number,
     data: UpdateIngredientDto,
   ): Promise<IngredientResponseDto> {
+    const currentIngredient = await this.getCurrentIngredient(id);
+
+    const updatedIngredient = {
+      ...currentIngredient,
+      ...data,
+    };
+
+    return this.repository.save(updatedIngredient);
+  }
+
+  async deleteOne(id: number) {
+    try {
+      await this.getCurrentIngredient(id);
+
+      await this.repository.softDelete(id);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async checkIfIngredientExists(data: CreateIngredientDto) {
+    const existingIngredient = await this.repository.findOne({
+      where: {
+        name: data.name,
+        user: { id: data.userId },
+      },
+    });
+
+    if (existingIngredient) {
+      throw new ConflictException(
+        `You already have a meal with the same name.`,
+      );
+    }
+    return existingIngredient;
+  }
+
+  async getCurrentIngredient(id: number) {
     const currentIngredient = await this.repository.findOne({
       where: { id },
     });
@@ -70,23 +90,6 @@ export class IngredientService {
       throw new NotFoundException('No ingredient found with the provided id.');
     }
 
-    return this.repository.save(data);
-  }
-
-  async deleteOne(id: number) {
-    try {
-      const currentIngredient = await this.repository.findOne({
-        where: { id },
-      });
-      if (!currentIngredient) {
-        throw new NotFoundException(
-          'No ingredient found with the provided id.',
-        );
-      }
-
-      await this.repository.softDelete(id);
-    } catch (error) {
-      throw error;
-    }
+    return currentIngredient;
   }
 }

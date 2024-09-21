@@ -117,4 +117,11 @@ describe('CreateIngredientDto', () => {
     expect(errors.length).toBeGreaterThan(0);
     expect(errors[0].property).toBe('unit');
   });
+
+  it('should fail if price is negative', async () => {
+    dto = Object.assign(new CreateIngredientDto(), dto, { price: -14 });
+    const errors = await validate(dto);
+    expect(errors.length).toBeGreaterThan(0);
+    expect(errors[0].property).toBe('price');
+  });
 });

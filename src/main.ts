@@ -16,7 +16,7 @@ async function bootstrap() {
   app.enableCors({ origin: process.env.FRONTEND_URL, credentials: true });
 
   //validation pipeline
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
   app.use(json({ limit: '20kb' }));
 

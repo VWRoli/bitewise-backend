@@ -43,9 +43,7 @@ export function IsBiggerThanSugarAndFiber(
           const sugar = args.object['sugar'];
           const dietaryFiber = args.object['dietaryFiber'];
 
-          return (
-            totalCarbohydrates >= sugar && totalCarbohydrates >= dietaryFiber
-          );
+          return totalCarbohydrates >= sugar + dietaryFiber;
         },
         defaultMessage(args: ValidationArguments) {
           return `${args.property} must be greater than or equal to both sugar and dietaryFiber`;

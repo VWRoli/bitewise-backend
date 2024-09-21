@@ -24,4 +24,16 @@ export class UserService {
       throw error;
     }
   }
+
+  async validateUser(userId: number) {
+    const user = await this.repository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`No User with the provided id`);
+    }
+
+    return user;
+  }
 }

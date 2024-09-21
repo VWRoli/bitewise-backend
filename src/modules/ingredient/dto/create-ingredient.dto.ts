@@ -101,7 +101,7 @@ export class CreateIngredientDto {
   @ApiProperty({
     example: 50,
     description: 'Price',
-    required: false,
+    required: true,
   })
   readonly price: number;
 

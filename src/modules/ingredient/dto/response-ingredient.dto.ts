@@ -1,4 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
+import { User } from '../../auth/entities';
 
 export class IngredientResponseDto {
   @ApiProperty({
@@ -30,4 +32,7 @@ export class IngredientResponseDto {
 
   @ApiProperty({ example: 52, description: 'Calories content' })
   calories: number;
+
+  @Exclude()
+  user: User;
 }

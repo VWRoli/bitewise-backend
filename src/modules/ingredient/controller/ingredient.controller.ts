@@ -6,8 +6,8 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
-  Put,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
@@ -20,13 +20,13 @@ import {
   UpdateIngredientDto,
 } from '../dto';
 
-@ApiTags('ingredients')
+@ApiTags('ingredient')
 @UseGuards(JwtGuard, ThrottlerGuard)
-@Controller('ingredients')
+@Controller('ingredient')
 export class IngredientController {
   constructor(private readonly ingredientService: IngredientService) {}
 
-  @Get()
+  @Get(':userId')
   @ApiOkResponse({ type: [IngredientResponseDto] })
   getAllIngredient(@Param('userId') userId: number) {
     return this.ingredientService.getAll(userId);
@@ -37,7 +37,7 @@ export class IngredientController {
     return this.ingredientService.createOne(dto);
   }
 
-  @Put(':ingredientId')
+  @Patch(':ingredientId')
   @ApiOkResponse({ type: IngredientResponseDto })
   updateIngredient(
     @Param('ingredientId') ingredientId: number,

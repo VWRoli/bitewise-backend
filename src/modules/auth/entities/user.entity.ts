@@ -9,6 +9,7 @@ import {
   DeleteDateColumn,
   OneToMany,
 } from 'typeorm';
+import { Meal } from '../../meal/entities';
 
 @Entity()
 export class User {
@@ -21,6 +22,9 @@ export class User {
 
   @OneToMany(() => Ingredient, (ingredient) => ingredient.user)
   ingredients: Ingredient[];
+
+  @OneToMany(() => Meal, (meal) => meal.user)
+  meals: Meal[];
 
   @Column()
   hash: string;

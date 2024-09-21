@@ -7,6 +7,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import databaseConfig from './app.development.config';
 import { IngredientModule } from './modules/ingredient/ingredient.module';
+import { MealModule } from './modules/meal/meal.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { IngredientModule } from './modules/ingredient/ingredient.module';
     AuthModule,
     UserModule,
     IngredientModule,
+    MealModule,
   ],
   controllers: [],
   providers: [

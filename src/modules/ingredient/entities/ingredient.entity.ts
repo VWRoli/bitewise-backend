@@ -7,14 +7,14 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   RelationId,
-  Unique,
   UpdateDateColumn,
 } from 'typeorm';
+import { MealIngredient } from '../../meal/entities';
 
 @Entity()
-@Unique(['name'])
 export class Ingredient {
   @PrimaryGeneratedColumn('increment')
   id: number;
@@ -48,6 +48,12 @@ export class Ingredient {
 
   @Column({ type: 'enum', enum: EUnit, enumName: 'EUnit' })
   unit: EUnit;
+
+  @OneToMany(
+    () => MealIngredient,
+    (mealIngredient) => mealIngredient.ingredient,
+  )
+  mealIngredients: MealIngredient[];
 
   @ManyToOne(() => User, (user) => user.ingredients)
   @JoinColumn()
