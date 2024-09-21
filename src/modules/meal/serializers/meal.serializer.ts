@@ -4,9 +4,9 @@ import { MealIngredient } from '../entities';
 
 export function serializeMeal(meal: Meal): MealResponseDto {
   return {
-    id: meal.id,
-    name: meal.name,
-    ingredients: meal.mealIngredients.map((mealIngredient) =>
+    id: meal?.id,
+    name: meal?.name,
+    mealIngredients: meal?.mealIngredients?.map((mealIngredient) =>
       serializeMealIngredient(mealIngredient),
     ),
   };
@@ -16,9 +16,9 @@ export function serializeMealIngredient(
   mealIngredient: MealIngredient,
 ): MealIngredientResponseDto {
   return {
-    id: mealIngredient.id,
-    ingredientId: mealIngredient.ingredient.id,
-    ingredientName: mealIngredient.ingredient.name,
-    quantity: mealIngredient.quantity,
+    id: mealIngredient?.id,
+    ingredientId: mealIngredient?.ingredient?.id,
+    ingredientName: mealIngredient?.ingredient?.name,
+    quantity: mealIngredient?.quantity,
   };
 }

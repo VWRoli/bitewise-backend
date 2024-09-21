@@ -32,7 +32,7 @@ export class CreateMealDto {
     description: 'Array of ingredients with quantities',
     required: true,
   })
-  readonly ingredients: IngredientQuantityDto[];
+  readonly mealIngredients: IngredientQuantityDto[];
 
   @IsNumber()
   @ApiProperty({ example: 1, required: true })

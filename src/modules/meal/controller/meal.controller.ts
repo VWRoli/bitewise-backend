@@ -22,11 +22,11 @@ import { MealService } from '../service';
 export class MealController {
   constructor(private readonly mealService: MealService) {}
 
-  // @Get()
-  // @ApiOkResponse({ type: MealResponseDto })
-  // getOneMeal(@Param('userId') userId: number) {
-  //   return this.mealService.getOne(userId);
-  // }
+  @Get(':mealId')
+  @ApiOkResponse({ type: MealResponseDto })
+  getOneMeal(@Param('mealId') mealId: number) {
+    return this.mealService.getOne(mealId);
+  }
 
   @Get('/all/:userId')
   @ApiOkResponse({ type: [MealResponseDto] })

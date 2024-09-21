@@ -23,20 +23,28 @@ export class MealService {
     private repository: Repository<Meal>,
     @InjectRepository(Ingredient)
     private ingredientRepository: Repository<Ingredient>,
+    @InjectRepository(MealIngredient)
+    private mealIngredientRepository: Repository<MealIngredient>,
     private readonly userService: UserService,
   ) {}
 
-  async getOne(userId: number): Promise<MealResponseDto> {
+  async getOne(mealId: number): Promise<MealResponseDto> {
     const meal = await this.repository.findOne({
-      where: { user: { id: userId } },
+      where: { id: mealId },
+      relations: ['mealIngredients'],
     });
+
+    if (!meal) {
+      throw new NotFoundException(`No meal found with the provided ID.`);
+    }
+
     return serializeMeal(meal);
   }
 
   async getAll(userId: number): Promise<MealResponseDto[]> {
-    console.log(userId);
     const meals = await this.repository.find({
       where: { user: { id: userId } },
+      relations: ['mealIngredients'],
     });
 
     const serializedMeals = meals.map((meal) => serializeMeal(meal));
@@ -54,7 +62,7 @@ export class MealService {
       mealIngredients: [],
     });
 
-    for (const mealIngredientDto of data.ingredients) {
+    for (const mealIngredientDto of data.mealIngredients) {
       await this.addMealIngredient(meal, mealIngredientDto);
     }
 
@@ -64,38 +72,34 @@ export class MealService {
   }
 
   async updateOne(id: number, data: UpdateMealDto): Promise<MealResponseDto> {
-    const currentMeal = await this.repository.findOne({
-      where: { id },
-    });
-    if (!currentMeal) {
-      throw new NotFoundException('No meal found with the provided id.');
-    }
+    const currentMeal = await this.getCurrentMeal(id);
 
-    const savedMeal = await this.repository.save(data);
-
-    // Serialize the response
-    const mealResponse: MealResponseDto = {
-      id: savedMeal.id,
-      name: savedMeal.name,
-      ingredients: savedMeal.mealIngredients.map((mi) => ({
-        id: mi.id,
-        ingredientId: mi.ingredient.id,
-        ingredientName: mi.ingredient.name,
-        quantity: mi.quantity,
-      })),
+    const updatedMeal: Meal = {
+      ...currentMeal,
+      ...data,
+      mealIngredients: [],
     };
 
-    return mealResponse;
+    const existingMealIngredients = await this.mealIngredientRepository.find({
+      where: { meal: { id: currentMeal.id } },
+    });
+
+    for (const mealIngredient of existingMealIngredients) {
+      await this.mealIngredientRepository.remove(mealIngredient);
+    }
+
+    for (const mealIngredientDto of data.mealIngredients) {
+      await this.addMealIngredient(updatedMeal, mealIngredientDto);
+    }
+
+    const savedMeal = await this.repository.save(updatedMeal);
+
+    return serializeMeal(savedMeal);
   }
 
   async deleteOne(id: number) {
     try {
-      const currentMeal = await this.repository.findOne({
-        where: { id },
-      });
-      if (!currentMeal) {
-        throw new NotFoundException('No meal found with the provided id.');
-      }
+      await this.getCurrentMeal(id);
 
       await this.repository.softDelete(id);
     } catch (error) {
@@ -139,5 +143,17 @@ export class MealService {
     mealIngredient.quantity = mealIngredientDto.quantity;
 
     meal.mealIngredients.push(mealIngredient);
+  }
+
+  async getCurrentMeal(id: number) {
+    const currentMeal = await this.repository.findOne({
+      where: { id },
+      relations: ['mealIngredients'],
+    });
+    if (!currentMeal) {
+      throw new NotFoundException('No meal found with the provided id.');
+    }
+
+    return currentMeal;
   }
 }
