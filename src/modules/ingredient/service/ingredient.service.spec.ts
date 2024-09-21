@@ -5,8 +5,12 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../../auth/entities';
 import { Test } from '@nestjs/testing';
 import { ConflictException, NotFoundException } from '@nestjs/common';
+import { UserService } from '../../user/service';
 
 const ingredientStub = stubIngredient();
+let ingredientResponseStub = stubIngredient();
+delete ingredientResponseStub.user;
+
 const ingredientStubs = [ingredientStub];
 
 describe('IngredientService', () => {
@@ -18,6 +22,7 @@ describe('IngredientService', () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
         IngredientService,
+        UserService,
         {
           provide: getRepositoryToken(Ingredient),
           useValue: {
@@ -82,11 +87,11 @@ describe('IngredientService', () => {
         .mockResolvedValueOnce(null)
         .mockResolvedValueOnce(ingredientStub);
       jest.spyOn(repository, 'create').mockReturnValue(ingredientStub);
-      jest.spyOn(repository, 'save').mockResolvedValue(ingredientStub);
+      jest.spyOn(repository, 'save').mockResolvedValue(ingredientResponseStub);
 
       const result = await service.createOne(ingredientStub);
 
-      expect(result).toEqual(ingredientStub);
+      expect(result).toEqual(ingredientResponseStub);
       expect(repository.save).toHaveBeenCalledWith(ingredientStub);
     });
 
@@ -113,15 +118,11 @@ describe('IngredientService', () => {
     it('should delete an existing ingredient', async () => {
       jest.spyOn(repository, 'findOne').mockResolvedValue(ingredientStub);
       jest.spyOn(repository, 'softDelete').mockResolvedValue(undefined);
-
       await service.deleteOne(ingredientStub.id);
-
       expect(repository.softDelete).toHaveBeenCalledWith(ingredientStub.id);
     });
-
     it('should throw a NotFoundException if ingredient does not exist', async () => {
       jest.spyOn(repository, 'findOne').mockResolvedValue(null);
-
       await expect(service.deleteOne(ingredientStub.id)).rejects.toThrow(
         NotFoundException,
       );

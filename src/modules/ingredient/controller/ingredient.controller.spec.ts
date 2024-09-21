@@ -6,6 +6,7 @@ import { Ingredient, stubIngredient } from '../entities';
 import { IngredientController } from './ingredient.controller';
 import { IngredientService } from '../service';
 import { User } from '../../auth/entities';
+import { UserService } from '../../user/service';
 
 const ingredientResponseStub = stubIngredient();
 const ingredientResponseStubs = [ingredientResponseStub];
@@ -23,6 +24,7 @@ describe('IngredientController', () => {
       controllers: [IngredientController],
       providers: [
         IngredientService,
+        UserService,
         {
           provide: getRepositoryToken(Ingredient),
           useValue: jest.fn(),
@@ -62,6 +64,7 @@ describe('IngredientController', () => {
       jest
         .spyOn(service, 'createOne')
         .mockResolvedValue(ingredientResponseStub);
+
       const result = await controller.createIngredient(ingredientStub);
 
       expect(result).toEqual(ingredientResponseStub);
