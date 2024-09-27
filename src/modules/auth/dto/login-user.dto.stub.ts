@@ -2,7 +2,7 @@ import { LoginUserDto } from './index';
 
 export const stubLoginUserDto = (): LoginUserDto => {
   return {
-    email: 'email@budgetly.com',
+    email: 'email@bitewise.com',
     password: 'StrongPassword1',
   };
 };

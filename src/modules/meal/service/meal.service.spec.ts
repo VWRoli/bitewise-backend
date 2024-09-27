@@ -96,6 +96,37 @@ describe('MealService', () => {
     });
   });
 
+  describe('getOne', () => {
+    it('should return a meal for a valid meal ID', async () => {
+      const mealId = mealStub.id;
+      jest.spyOn(repository, 'findOne').mockResolvedValue(mealStub);
+
+      const result = await service.getOne(mealId);
+
+      expect(result).toEqual(serializeMeal(mealStub));
+      expect(repository.findOne).toHaveBeenCalledWith({
+        where: { id: mealId },
+        relations: ['mealIngredients'],
+      });
+    });
+
+    it('should throw a NotFoundException for an invalid meal ID', async () => {
+      const invalidMealId = 999;
+      jest.spyOn(repository, 'findOne').mockResolvedValue(null);
+
+      await expect(service.getOne(invalidMealId)).rejects.toThrow(
+        NotFoundException,
+      );
+      await expect(service.getOne(invalidMealId)).rejects.toThrow(
+        `No meal found with the provided ID.`,
+      );
+      expect(repository.findOne).toHaveBeenCalledWith({
+        where: { id: invalidMealId },
+        relations: ['mealIngredients'],
+      });
+    });
+  });
+
   describe('createOne', () => {
     const newStub: CreateMealDto = {
       ...mealStub,
@@ -140,7 +171,7 @@ describe('MealService', () => {
       );
     });
 
-    it('should throw a ConflictException if budget with the same name already exists', async () => {
+    it('should throw a ConflictException if meal with the same name already exists', async () => {
       const user = mealStub.user;
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(user);
       jest.spyOn(repository, 'findOne').mockResolvedValue(mealStub);

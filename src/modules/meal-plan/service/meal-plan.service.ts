@@ -9,7 +9,7 @@ import {
   UpdateMealPlanDto,
 } from '../dto';
 import { MealService } from '../../meal/service';
-import { serializeMealPlan } from 'src/modules/meal-plan/serializers/meal-plan.serializer';
+import { serializeMealPlan } from '../serializers/meal-plan.serializer';
 
 @Injectable()
 export class MealPlanService {

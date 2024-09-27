@@ -7,7 +7,7 @@ import { MealPlanService } from './service';
 import { UserService } from '../user/service';
 import { Meal, MealIngredient } from '../meal/entities';
 import { MealService } from '../meal/service';
-import { Ingredient } from 'src/modules/ingredient/entities';
+import { Ingredient } from '../ingredient/entities';
 
 @Module({
   imports: [

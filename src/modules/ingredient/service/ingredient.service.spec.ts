@@ -103,7 +103,7 @@ describe('IngredientService', () => {
       );
     });
 
-    it('should throw a ConflictException if budget with the same name already exists', async () => {
+    it('should throw a ConflictException if meal with the same name already exists', async () => {
       const user = ingredientStub.user;
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(user);
       jest.spyOn(repository, 'findOne').mockResolvedValue(ingredientStub);

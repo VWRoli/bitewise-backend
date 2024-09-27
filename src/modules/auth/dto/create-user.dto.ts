@@ -12,7 +12,7 @@ import { Match } from '../decorators';
 export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty()
-  @ApiProperty({ example: 'email@budgetly.com', required: true })
+  @ApiProperty({ example: 'email@bitewise.com', required: true })
   @Transform(({ value }) => value.trim())
   readonly email: string;
 
