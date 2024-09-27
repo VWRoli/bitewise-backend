@@ -1,14 +1,14 @@
 import { stubIngredient } from '../../ingredient/entities';
 import { stubUser } from '../../auth/entities';
 import { Meal, MealIngredient } from '../entities';
-import { stubMealPlan } from '../../meal-plan/entities';
+import { MealPlan } from '../../meal-plan/entities';
 
 export function stubMeal(): Meal {
   return {
     id: 1,
     name: 'Fruit Salad',
     mealIngredients: [stubMealIngredient()],
-    mealPlans: [stubMealPlan()],
+    mealPlans: [{ id: 1 } as MealPlan],
     user: stubUser(),
     userId: stubUser().id,
     createTimeStamp: new Date(),
