@@ -53,7 +53,10 @@ export class IngredientService {
       ...data,
     };
 
-    return this.repository.save(updatedIngredient);
+    await this.checkIfIngredientExists(updatedIngredient);
+
+    const savedIngredient = this.repository.save(updatedIngredient);
+    return plainToClass(IngredientResponseDto, savedIngredient);
   }
 
   async deleteOne(id: number) {

@@ -114,6 +114,50 @@ describe('IngredientService', () => {
     });
   });
 
+  describe('updateOne', () => {
+    it('should update an existing ingredient', async () => {
+      const updatedIngredient: Ingredient = {
+        ...ingredientStub,
+        name: 'Updated Ingredient',
+      };
+
+      jest
+        .spyOn(repository, 'findOne')
+        .mockResolvedValue(ingredientStub)
+        .mockResolvedValueOnce(ingredientStub)
+        .mockResolvedValueOnce(null);
+
+      jest.spyOn(repository, 'save').mockResolvedValue(updatedIngredient);
+
+      const result = await service.updateOne(
+        ingredientStub.userId,
+        updatedIngredient,
+      );
+      expect(repository.findOne).toHaveBeenCalledTimes(2);
+      expect(result).toEqual({
+        ...ingredientResponseStub,
+        name: 'Updated Ingredient',
+      });
+      expect(repository.save).toHaveBeenCalledWith(updatedIngredient);
+    });
+
+    it('should throw a NotFoundException if ingredient does not exist', async () => {
+      jest.spyOn(repository, 'findOne').mockResolvedValue(null);
+
+      await expect(
+        service.updateOne(ingredientStub.id, ingredientStub),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw a ConflictException if another ingredient with the same name already exists', async () => {
+      jest.spyOn(repository, 'findOne').mockResolvedValue(ingredientStub);
+
+      await expect(
+        service.updateOne(ingredientStub.id, ingredientStub),
+      ).rejects.toThrow(ConflictException);
+    });
+  });
+
   describe('deleteOne', () => {
     it('should delete an existing ingredient', async () => {
       jest.spyOn(repository, 'findOne').mockResolvedValue(ingredientStub);
