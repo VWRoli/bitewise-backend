@@ -4,16 +4,17 @@ import { initializeSwagger } from './swagger';
 import helmet from 'helmet';
 import { ValidationPipe } from '@nestjs/common';
 import { json } from 'express';
+import { config } from 'src/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const port = process.env.PORT;
+  const port = config.PORT;
 
   //secure app by setting HTTP response headers
   app.use(helmet());
 
   //enable cors
-  app.enableCors({ origin: process.env.FRONTEND_URL, credentials: true });
+  app.enableCors({ origin: config.FRONTEND_URL, credentials: true });
 
   //validation pipeline
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));

@@ -8,6 +8,7 @@ import { UserModule } from './modules/user/user.module';
 import databaseConfig from './app.development.config';
 import { IngredientModule } from './modules/ingredient/ingredient.module';
 import { MealModule } from './modules/meal/meal.module';
+import { config } from 'src/config';
 
 @Module({
   imports: [
@@ -15,8 +16,8 @@ import { MealModule } from './modules/meal/meal.module';
     TypeOrmModule.forRoot(databaseConfig),
     ThrottlerModule.forRoot([
       {
-        ttl: +process.env.THROTTLER_TTL,
-        limit: +process.env.THROTTLER_LIMIT,
+        ttl: config.THROTTLER.TTL,
+        limit: config.THROTTLER.LIMIT,
       },
     ]),
     AuthModule,
