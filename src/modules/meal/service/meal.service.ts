@@ -158,9 +158,12 @@ export class MealService {
   }
 
   async findMealsByIds(userId: number, ids: number[]): Promise<Meal[]> {
-    const meals = await this.repository.findBy({
-      id: In(ids),
-      user: { id: userId },
+    const meals = await this.repository.find({
+      where: {
+        id: In(ids),
+        user: { id: userId },
+      },
+      relations: ['mealIngredients', 'mealIngredients.ingredient'],
     });
 
     if (meals.length !== ids.length) {
