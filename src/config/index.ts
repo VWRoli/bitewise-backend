@@ -17,10 +17,6 @@ export const config: IConfig = {
     DATABASE: process.env.MYSQL_DATABASE,
     USER: process.env.MYSQL_USER,
   },
-  JWT: {
-    SECRET: process.env.JWT_SECRET,
-    TOKEN_EXPIRY: process.env.TOKEN_EXPIRY,
-  },
 };
 
 export interface IConfig {
@@ -41,9 +37,5 @@ export interface IConfig {
     ROOT_PASSWORD: string;
     DATABASE: string;
     USER: string;
-  };
-  JWT: {
-    SECRET: string;
-    TOKEN_EXPIRY: string;
   };
 }

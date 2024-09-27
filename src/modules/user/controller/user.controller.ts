@@ -11,9 +11,10 @@ import { UserService } from '../service';
 import { JwtGuard } from '../../auth/guard';
 import { GetUser } from '../../auth/decorators';
 import { User } from '../../auth/entities';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 @ApiTags('users')
-@UseGuards(JwtGuard)
+@UseGuards(JwtGuard, ThrottlerGuard)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}

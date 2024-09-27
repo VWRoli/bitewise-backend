@@ -26,6 +26,9 @@ export class User {
   @OneToMany(() => Meal, (meal) => meal.user)
   meals: Meal[];
 
+  @Column({ default: null })
+  refreshToken: string | null;
+
   @Column()
   hash: string;
 
