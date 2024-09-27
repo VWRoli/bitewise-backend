@@ -11,7 +11,7 @@ import {
   UpdateMealDto,
 } from '../dto';
 import { Meal, MealIngredient } from '../entities';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Ingredient } from '../../ingredient/entities';
 import { UserService } from '../../user/service';
 import { serializeMeal } from '../serializers/meal.serializer';
@@ -155,5 +155,22 @@ export class MealService {
     }
 
     return currentMeal;
+  }
+
+  async findMealsByIds(userId: number, ids: number[]): Promise<Meal[]> {
+    const meals = await this.repository.findBy({
+      id: In(ids),
+      user: { id: userId },
+    });
+
+    if (meals.length !== ids.length) {
+      const foundIds = meals.map((meal) => meal.id);
+      const notFoundIds = ids.filter((id) => !foundIds.includes(id));
+      throw new NotFoundException(
+        `Meals with the following IDs were not found or do not belong to the user: ${notFoundIds.join(', ')}`,
+      );
+    }
+
+    return meals;
   }
 }

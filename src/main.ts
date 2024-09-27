@@ -4,7 +4,7 @@ import { initializeSwagger } from './swagger';
 import helmet from 'helmet';
 import { ValidationPipe } from '@nestjs/common';
 import { json } from 'express';
-import { config } from 'src/config';
+import { config } from './config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
