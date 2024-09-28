@@ -1,6 +1,6 @@
 export interface ICurrentUser {
   email: string;
-  sub: string;
+  sub: number;
   iat: number;
   exp: number;
   refreshToken: string;

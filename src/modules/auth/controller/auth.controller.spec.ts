@@ -8,7 +8,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
-import { SALT_WORK_FACTOR } from '../auth.constants';
+import { SALT_WORK_FACTOR } from '../../token/constants/token.constant';
 
 const userStub = stubUser();
 const loginUserStubDto = stubLoginUserDto();

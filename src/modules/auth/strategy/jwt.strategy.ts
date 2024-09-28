@@ -3,27 +3,30 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ICurrentUser } from '../interfaces';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '../../auth/entities';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
-  constructor(config: ConfigService) {
+  constructor(
+    @InjectRepository(User) private repository: Repository<User>,
+    config: ConfigService,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: config.get('ACCESS_TOKEN_SECRET'),
     });
   }
-  //TODO: test whats up with these two
+
   async validate(payload: ICurrentUser) {
-    return payload;
+    const id = payload.sub;
+
+    const user = await this.repository.findOne({
+      where: { id },
+    });
+
+    delete user.hash;
+    return user;
   }
-  // async validate(payload: { sub: number; email: string }) {
-  //   const id = payload.sub;
-
-  //   const user = await this.repository.findOne({
-  //     where: { id },
-  //   });
-
-  //   delete user.hash;
-  //   return user;
-  // }
 }
