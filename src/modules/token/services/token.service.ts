@@ -6,6 +6,7 @@ import { ExpirationStrategy } from '../../token/enum';
 import { CookieOptions, Response } from 'express';
 import { UserService } from '../../user/service';
 import { config } from '../../../config';
+import { User } from '../../auth/entities';
 
 @Injectable()
 export class TokenService {
@@ -49,8 +50,8 @@ export class TokenService {
   returnTokensAsCookies(
     accessToken: string,
     refreshToken: string,
-    message: string,
     res: Response,
+    user: User,
     expirationStrategy: ExpirationStrategy = ExpirationStrategy.DEFAULT,
   ) {
     const cookieOptions = this.getDefaultCookieOptions();
@@ -68,7 +69,7 @@ export class TokenService {
       expires: new Date(refreshExpiration),
     });
 
-    return this.sendResponse(res, message);
+    return this.sendResponse(res, user);
   }
 
   private getDefaultCookieOptions(): CookieOptions {
@@ -105,8 +106,11 @@ export class TokenService {
     res.cookie(name, value, options);
   }
 
-  private sendResponse(res: Response, message: string): Response {
-    return res.status(HttpStatus.OK).json({ message });
+  private sendResponse(res: Response, user: User): Response {
+    delete user.hash;
+    delete user.refreshToken;
+
+    return res.status(HttpStatus.OK).json(user);
   }
 
   async updateRefreshTokenHash(

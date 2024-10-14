@@ -22,7 +22,7 @@ export class AuthService {
     private tokenService: TokenService,
   ) {}
 
-  async signUp(dto: CreateUserDto): Promise<void> {
+  async signUp(dto: CreateUserDto): Promise<User> {
     const existingUser = await this.repository.findOne({
       where: { email: dto.email },
     });
@@ -36,7 +36,11 @@ export class AuthService {
     });
 
     try {
-      await this.repository.save(user);
+      const savedUser = await this.repository.save(user);
+      delete savedUser.hash;
+      delete savedUser.refreshToken;
+
+      return savedUser;
     } catch (error) {
       throw new InternalServerErrorException(
         'User creation failed due to a server error',
@@ -66,8 +70,8 @@ export class AuthService {
     return this.tokenService.returnTokensAsCookies(
       accessToken,
       refreshToken,
-      'Sign in successful',
       res,
+      user,
     );
   }
 
@@ -77,8 +81,8 @@ export class AuthService {
     return this.tokenService.returnTokensAsCookies(
       '',
       '',
-      'Sign out successful',
       res,
+      null,
       ExpirationStrategy.IMMEDIATE,
     );
   }
