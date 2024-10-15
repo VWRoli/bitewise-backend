@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import { ValidationPipe } from '@nestjs/common';
 import { json } from 'express';
 import { config } from './config';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,6 +13,8 @@ async function bootstrap() {
 
   //secure app by setting HTTP response headers
   app.use(helmet());
+
+  app.use(cookieParser());
 
   //enable cors
   app.enableCors({ origin: config.FRONTEND_URL, credentials: true });

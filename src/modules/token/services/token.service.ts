@@ -74,7 +74,7 @@ export class TokenService {
 
   private getDefaultCookieOptions(): CookieOptions {
     return {
-      secure: true,
+      secure: config.NODE_ENV === 'production',
       sameSite: 'strict',
       httpOnly: true,
       path: '/',
