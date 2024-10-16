@@ -12,7 +12,6 @@ import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../services';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { Response } from 'express';
-import { User } from '../../auth/entities';
 
 @UseGuards(ThrottlerGuard)
 @ApiTags('auth')
@@ -22,8 +21,8 @@ export class AuthController {
 
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
-  signup(@Body() dto: CreateUserDto): Promise<User> {
-    return this.authService.signUp(dto);
+  signup(@Body() dto: CreateUserDto, @Res() res: Response) {
+    return this.authService.signUp(dto, res);
   }
 
   @HttpCode(HttpStatus.OK)

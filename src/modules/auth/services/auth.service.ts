@@ -22,7 +22,7 @@ export class AuthService {
     private tokenService: TokenService,
   ) {}
 
-  async signUp(dto: CreateUserDto): Promise<User> {
+  async signUp(dto: CreateUserDto, res: Response) {
     const existingUser = await this.repository.findOne({
       where: { email: dto.email },
     });
@@ -40,7 +40,22 @@ export class AuthService {
       delete savedUser.hash;
       delete savedUser.refreshToken;
 
-      return savedUser;
+      const { accessToken, refreshToken } = await this.tokenService.getTokens(
+        savedUser.id,
+        savedUser.email,
+      );
+
+      await this.tokenService.updateRefreshTokenHash(
+        savedUser.id,
+        refreshToken,
+      );
+
+      return this.tokenService.returnTokensAsCookies(
+        accessToken,
+        refreshToken,
+        res,
+        savedUser,
+      );
     } catch (error) {
       throw new InternalServerErrorException(
         'User creation failed due to a server error',
