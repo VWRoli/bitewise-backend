@@ -31,7 +31,7 @@ export class MealService {
   async getOne(mealId: number): Promise<MealResponseDto> {
     const meal = await this.repository.findOne({
       where: { id: mealId },
-      relations: ['mealIngredients'],
+      relations: ['mealIngredients', 'mealIngredients.ingredient'],
     });
 
     if (!meal) {
@@ -44,7 +44,7 @@ export class MealService {
   async getAll(userId: number): Promise<MealResponseDto[]> {
     const meals = await this.repository.find({
       where: { user: { id: userId } },
-      relations: ['mealIngredients'],
+      relations: ['mealIngredients', 'mealIngredients.ingredient'],
     });
 
     const serializedMeals = meals.map((meal) => serializeMeal(meal));
