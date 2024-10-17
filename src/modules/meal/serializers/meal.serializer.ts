@@ -20,14 +20,5 @@ export function serializeMealIngredient(
     ingredientId: mealIngredient?.ingredient?.id,
     ingredientName: mealIngredient?.ingredient?.name,
     quantity: mealIngredient?.quantity,
-    protein: mealIngredient?.ingredient?.protein,
-    totalFat: mealIngredient?.ingredient?.totalFat,
-    saturatedFat: mealIngredient?.ingredient?.saturatedFat,
-    totalCarbohydrates: mealIngredient?.ingredient?.totalCarbohydrates,
-    sugar: mealIngredient?.ingredient?.sugar,
-    dietaryFiber: mealIngredient?.ingredient?.dietaryFiber,
-    calories: mealIngredient?.ingredient?.calories,
-    price: mealIngredient?.ingredient?.price,
-    unit: mealIngredient?.ingredient?.unit,
   };
 }
