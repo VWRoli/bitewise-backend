@@ -15,6 +15,7 @@ import { In, Repository } from 'typeorm';
 import { Ingredient } from '../../ingredient/entities';
 import { UserService } from '../../user/service';
 import { serializeMeal } from '../serializers/meal.serializer';
+import { MEAL_RELATIONS } from '../constants';
 
 @Injectable()
 export class MealService {
@@ -31,7 +32,7 @@ export class MealService {
   async getOne(mealId: number): Promise<MealResponseDto> {
     const meal = await this.repository.findOne({
       where: { id: mealId },
-      relations: ['mealIngredients'],
+      relations: MEAL_RELATIONS,
     });
 
     if (!meal) {
@@ -44,7 +45,7 @@ export class MealService {
   async getAll(userId: number): Promise<MealResponseDto[]> {
     const meals = await this.repository.find({
       where: { user: { id: userId } },
-      relations: ['mealIngredients'],
+      relations: MEAL_RELATIONS,
     });
 
     const serializedMeals = meals.map((meal) => serializeMeal(meal));

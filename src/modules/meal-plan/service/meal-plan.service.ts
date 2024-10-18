@@ -10,6 +10,7 @@ import {
 } from '../dto';
 import { MealService } from '../../meal/service';
 import { serializeMealPlan } from '../serializers/meal-plan.serializer';
+import { MEAL_PLAN_RELATIONS } from '../constants';
 
 @Injectable()
 export class MealPlanService {
@@ -23,7 +24,7 @@ export class MealPlanService {
   async getOne(mealPlanId: number) {
     const mealPlan = await this.repository.findOne({
       where: { id: mealPlanId },
-      relations: ['meals', 'meals.mealIngredients'],
+      relations: MEAL_PLAN_RELATIONS,
     });
     if (!mealPlan) {
       throw new NotFoundException(`No meal plan found with the provided ID.`);
@@ -34,7 +35,7 @@ export class MealPlanService {
   async getAll(userId: number): Promise<MealPlanResponseDto[]> {
     const mealPlans = await this.repository.find({
       where: { user: { id: userId } },
-      relations: ['meals', 'meals.mealIngredients'],
+      relations: MEAL_PLAN_RELATIONS,
     });
     const serializedMealPlans = mealPlans.map((mealPlan) =>
       serializeMealPlan(mealPlan),
