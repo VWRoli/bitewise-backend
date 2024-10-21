@@ -48,12 +48,17 @@ export class IngredientService {
   ): Promise<IngredientResponseDto> {
     const currentIngredient = await this.getCurrentIngredient(id);
 
+    if (currentIngredient.name !== data.name) {
+      await this.checkIfIngredientExists({
+        ...data,
+        userId: currentIngredient.user.id,
+      } as CreateIngredientDto);
+    }
+
     const updatedIngredient = {
       ...currentIngredient,
       ...data,
     };
-
-    await this.checkIfIngredientExists(updatedIngredient);
 
     const savedIngredient = this.repository.save(updatedIngredient);
     return plainToClass(IngredientResponseDto, savedIngredient);
