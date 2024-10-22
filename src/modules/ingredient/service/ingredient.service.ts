@@ -51,7 +51,7 @@ export class IngredientService {
     if (currentIngredient.name !== data.name) {
       await this.checkIfIngredientExists({
         ...data,
-        userId: currentIngredient.user.id,
+        userId: currentIngredient.userId,
       } as CreateIngredientDto);
     }
 
