@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsNotEmpty, Min } from 'class-validator';
+import { IsNumber, IsNotEmpty, Min, IsPositive } from 'class-validator';
 
 export class IngredientQuantityDto {
   @IsNumber()
@@ -13,9 +13,7 @@ export class IngredientQuantityDto {
 
   @IsNumber()
   @IsNotEmpty()
-  @Min(1, {
-    message: 'Quantity must be at least 1',
-  })
+  @IsPositive()
   @ApiProperty({
     example: 100,
     description: 'Quantity of the ingredient in the meal',
