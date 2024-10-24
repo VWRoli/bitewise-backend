@@ -13,6 +13,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { MealIngredient } from '../../meal/entities';
+import { decimalTransformer } from '../../../common/transformers';
 
 @Entity()
 export class Ingredient {
@@ -22,28 +23,68 @@ export class Ingredient {
   @Column()
   name: string;
 
-  @Column()
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 1,
+    transformer: decimalTransformer,
+  })
   protein: number;
 
-  @Column()
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 1,
+    transformer: decimalTransformer,
+  })
   totalFat: number;
 
-  @Column()
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 1,
+    transformer: decimalTransformer,
+  })
   saturatedFat: number;
 
-  @Column()
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 1,
+    transformer: decimalTransformer,
+  })
   totalCarbohydrates: number;
 
-  @Column()
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 1,
+    transformer: decimalTransformer,
+  })
   sugar: number;
 
-  @Column()
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 1,
+    transformer: decimalTransformer,
+  })
   dietaryFiber: number;
 
-  @Column()
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 1,
+    transformer: decimalTransformer,
+  })
   calories: number;
 
-  @Column()
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    transformer: decimalTransformer,
+  })
   price: number;
 
   @Column({ type: 'enum', enum: EUnit, enumName: 'EUnit' })
