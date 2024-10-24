@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Meal } from './meal.entity';
 import { Ingredient } from '../../ingredient/entities';
+import { decimalTransformer } from '../../../common/transformers';
 
 @Entity()
 export class MealIngredient {
@@ -21,6 +22,11 @@ export class MealIngredient {
   @JoinColumn({ name: 'ingredientId' })
   ingredient: Ingredient;
 
-  @Column()
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    transformer: decimalTransformer,
+  })
   quantity: number;
 }
