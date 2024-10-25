@@ -8,6 +8,9 @@ export function serializeMealPlan(mealPlan: MealPlan): {
 } {
   return {
     id: mealPlan?.id,
-    meals: mealPlan?.meals?.map((meal) => serializeMeal(meal)) || [],
+    meals:
+      mealPlan?.mealPlanMeals?.map((mealPlanMeal) =>
+        serializeMeal(mealPlanMeal.meal),
+      ) || [],
   };
 }

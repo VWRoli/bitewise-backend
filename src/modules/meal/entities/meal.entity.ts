@@ -6,14 +6,13 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   RelationId,
   UpdateDateColumn,
 } from 'typeorm';
-import { MealPlan } from '../../meal-plan/entities';
+import { MealPlanMeal } from '../../meal-plan/entities';
 
 @Entity()
 export class Meal {
@@ -28,8 +27,8 @@ export class Meal {
   })
   mealIngredients: MealIngredient[];
 
-  @ManyToMany(() => MealPlan, (mealPlan) => mealPlan.meals)
-  mealPlans: MealPlan[];
+  @OneToMany(() => MealPlanMeal, (mealPlanMeal) => mealPlanMeal.meal)
+  mealPlans: MealPlanMeal[];
 
   @ManyToOne(() => User, (user) => user.meals)
   @JoinColumn()

@@ -1,5 +1,6 @@
 export const MEAL_PLAN_RELATIONS = [
-  'meals',
-  'meals.mealIngredients',
-  'meals.mealIngredients.ingredient',
+  'mealPlanMeals',
+  'mealPlanMeals.meal',
+  'mealPlanMeals.meal.mealIngredients',
+  'mealPlanMeals.meal.mealIngredients.ingredient',
 ];

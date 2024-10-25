@@ -1,11 +1,10 @@
 import { stubUser } from '../../auth/entities';
 import { MealPlan } from '.';
-import { stubMeal } from '../../meal/entities';
 
 export function stubMealPlan(): MealPlan {
   return {
     id: 1,
-    meals: [stubMeal()],
+    mealPlanMeals: [],
     user: stubUser(),
     userId: stubUser().id,
     createTimeStamp: new Date(),

@@ -164,16 +164,8 @@ export class MealService {
         id: In(ids),
         user: { id: userId },
       },
-      relations: ['mealIngredients', 'mealIngredients.ingredient'],
+      relations: MEAL_RELATIONS,
     });
-
-    if (meals?.length !== ids?.length) {
-      const foundIds = meals?.map((meal) => meal.id);
-      const notFoundIds = ids.filter((id) => !foundIds.includes(id));
-      throw new NotFoundException(
-        `Meals with the following IDs were not found or do not belong to the user: ${notFoundIds.join(', ')}`,
-      );
-    }
 
     return meals;
   }

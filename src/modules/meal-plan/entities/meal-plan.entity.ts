@@ -4,35 +4,23 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   RelationId,
   UpdateDateColumn,
 } from 'typeorm';
-import { Meal } from '../../meal/entities';
+import { MealPlanMeal } from './meal-plan-meal.entity';
 
 @Entity()
 export class MealPlan {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @ManyToMany(() => Meal, (meal) => meal.mealPlans, {
+  @OneToMany(() => MealPlanMeal, (mealPlanMeal) => mealPlanMeal.mealPlan, {
     cascade: true,
   })
-  @JoinTable({
-    name: 'meal_plan_meals',
-    joinColumn: {
-      name: 'mealPlanId',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'mealId',
-      referencedColumnName: 'id',
-    },
-  })
-  meals: Meal[];
+  mealPlanMeals: MealPlanMeal[];
 
   @ManyToOne(() => User, (user) => user.meals)
   @JoinColumn()

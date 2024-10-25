@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserService } from '../../user/service';
-import { MealPlan } from '../entities';
+import { MealPlan, MealPlanMeal } from '../entities';
 import {
   CreateMealPlanDto,
   MealPlanResponseDto,
@@ -35,7 +35,7 @@ export class MealPlanService {
   async getAll(userId: number): Promise<MealPlanResponseDto[]> {
     const mealPlans = await this.repository.find({
       where: { user: { id: userId } },
-      relations: MEAL_PLAN_RELATIONS,
+      //relations: MEAL_PLAN_RELATIONS,
     });
     const serializedMealPlans = mealPlans.map((mealPlan) =>
       serializeMealPlan(mealPlan),
@@ -50,7 +50,13 @@ export class MealPlanService {
 
     const mealPlan = this.repository.create({
       user: user,
-      meals: meals,
+    });
+
+    mealPlan.mealPlanMeals = meals.map((meal) => {
+      const mealPlanMeal = new MealPlanMeal();
+      mealPlanMeal.mealPlan = mealPlan;
+      mealPlanMeal.meal = meal;
+      return mealPlanMeal;
     });
 
     const savedMealPlan = await this.repository.save(mealPlan);
@@ -64,13 +70,20 @@ export class MealPlanService {
     const user = await this.userService.validateUser(data.userId);
 
     const meals = await this.mealService.findMealsByIds(user.id, data.mealIds);
-    const updatedMeal: MealPlan = {
+
+    const mealPlanMeals = meals.map((meal) => {
+      const mealPlanMeal = new MealPlanMeal();
+      mealPlanMeal.mealPlan = currentMealPlan;
+      mealPlanMeal.meal = meal;
+      return mealPlanMeal;
+    });
+    const updatedMealPlan: MealPlan = {
       ...currentMealPlan,
       ...data,
-      meals: meals,
+      mealPlanMeals,
     };
 
-    const savedMealPlan = await this.repository.save(updatedMeal);
+    const savedMealPlan = await this.repository.save(updatedMealPlan);
 
     return serializeMealPlan(savedMealPlan);
   }
