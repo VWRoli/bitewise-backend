@@ -28,7 +28,7 @@ export class Meal {
   mealIngredients: MealIngredient[];
 
   @OneToMany(() => MealPlanMeal, (mealPlanMeal) => mealPlanMeal.meal)
-  mealPlans: MealPlanMeal[];
+  mealPlanMeals: MealPlanMeal[];
 
   @ManyToOne(() => User, (user) => user.meals)
   @JoinColumn()

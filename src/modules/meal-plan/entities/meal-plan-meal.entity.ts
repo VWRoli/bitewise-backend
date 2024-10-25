@@ -1,4 +1,10 @@
-import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Meal } from '../../meal/entities';
 import { MealPlan } from '../../meal-plan/entities';
 
@@ -13,7 +19,7 @@ export class MealPlanMeal {
   @JoinColumn({ name: 'mealPlanId' })
   mealPlan: MealPlan;
 
-  @ManyToOne(() => Meal, (meal) => meal.mealPlans)
+  @ManyToOne(() => Meal, (meal) => meal.mealPlanMeals)
   @JoinColumn({ name: 'mealId' })
   meal: Meal;
 }

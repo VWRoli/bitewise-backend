@@ -8,7 +8,7 @@ export function stubMeal(): Meal {
     id: 1,
     name: 'Fruit Salad',
     mealIngredients: [stubMealIngredient()],
-    mealPlans: [],
+    mealPlanMeals: [],
     user: stubUser(),
     userId: stubUser().id,
     createTimeStamp: new Date(),

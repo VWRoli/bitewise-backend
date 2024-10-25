@@ -35,7 +35,7 @@ export class MealPlanService {
   async getAll(userId: number): Promise<MealPlanResponseDto[]> {
     const mealPlans = await this.repository.find({
       where: { user: { id: userId } },
-      //relations: MEAL_PLAN_RELATIONS,
+      relations: MEAL_PLAN_RELATIONS,
     });
     const serializedMealPlans = mealPlans.map((mealPlan) =>
       serializeMealPlan(mealPlan),
@@ -47,12 +47,15 @@ export class MealPlanService {
     const user = await this.userService.validateUser(data.userId);
 
     const meals = await this.mealService.findMealsByIds(user.id, data.mealIds);
-
     const mealPlan = this.repository.create({
       user: user,
     });
 
-    mealPlan.mealPlanMeals = meals.map((meal) => {
+    mealPlan.mealPlanMeals = data.mealIds.map((mealId) => {
+      const meal = meals.find((m) => m.id === mealId);
+      if (!meal) {
+        throw new NotFoundException(`Meal with ID ${mealId} not found.`);
+      }
       const mealPlanMeal = new MealPlanMeal();
       mealPlanMeal.mealPlan = mealPlan;
       mealPlanMeal.meal = meal;
@@ -100,7 +103,6 @@ export class MealPlanService {
   async getCurrentMealPlan(id: number) {
     const currentMealPlan = await this.repository.findOne({
       where: { id },
-      relations: ['meals'],
     });
     if (!currentMealPlan) {
       throw new NotFoundException('No meal plan found with the provided id.');
