@@ -9,6 +9,12 @@ export class MealPlanResponseDto {
   id: number;
 
   @ApiProperty({
+    example: 'Breakfast Meal Plan',
+    description: 'Name of the meal plan',
+  })
+  name: string;
+
+  @ApiProperty({
     description: 'Array of meals associated with the meal plan',
     type: [MealResponseDto],
   })
