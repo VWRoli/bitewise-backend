@@ -7,10 +7,7 @@ import {
   Length,
   Min,
 } from 'class-validator';
-import {
-  IsBiggerThanSaturatedFat,
-  IsBiggerThanSugarAndFiber,
-} from '../decorator';
+import { IsBiggerThanSaturatedFat } from '../decorator';
 import { MAX_LENGTH, MIN_LENGTH } from '../../../utils/constants';
 import { EUnit } from '../enum';
 
@@ -57,7 +54,6 @@ export class CreateIngredientDto {
   @IsNumber()
   @IsNotEmpty()
   @Min(0)
-  @IsBiggerThanSugarAndFiber()
   @ApiProperty({
     example: 30,
     description: 'Total carbohydrates in grams',

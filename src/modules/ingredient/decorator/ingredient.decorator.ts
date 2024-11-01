@@ -27,28 +27,3 @@ export function IsBiggerThanSaturatedFat(
     });
   };
 }
-
-export function IsBiggerThanSugarAndFiber(
-  validationOptions?: ValidationOptions,
-) {
-  return function (object: Object, propertyName: string) {
-    registerDecorator({
-      name: 'IsBiggerThanSugarAndFiber',
-      target: object.constructor,
-      propertyName: propertyName,
-      options: validationOptions,
-      validator: {
-        validate(value: any, args: ValidationArguments) {
-          const totalCarbohydrates = args.object['totalCarbohydrates'];
-          const sugar = args.object['sugar'];
-          const dietaryFiber = args.object['dietaryFiber'];
-
-          return totalCarbohydrates >= sugar + dietaryFiber;
-        },
-        defaultMessage(args: ValidationArguments) {
-          return `${args.property} must be greater than or equal to both sugar and dietaryFiber`;
-        },
-      },
-    });
-  };
-}

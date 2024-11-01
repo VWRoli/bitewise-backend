@@ -41,28 +41,6 @@ describe('CreateIngredientDto', () => {
     expect(errors[0].constraints).toHaveProperty('IsBiggerThanSaturatedFat');
   });
 
-  it('should fail if totalCarbohydrates is less than sugar', async () => {
-    dto = Object.assign(new CreateIngredientDto(), dto, {
-      totalCarbohydrates: 10,
-      sugar: 20,
-    });
-
-    const errors = await validate(dto);
-    expect(errors.length).toBeGreaterThan(0);
-    expect(errors[0].constraints).toHaveProperty('IsBiggerThanSugarAndFiber');
-  });
-
-  it('should fail if totalCarbohydrates is less than fiber', async () => {
-    dto = Object.assign(new CreateIngredientDto(), dto, {
-      totalCarbohydrates: 10,
-      dietaryFiber: 20,
-    });
-
-    const errors = await validate(dto);
-    expect(errors.length).toBeGreaterThan(0);
-    expect(errors[0].constraints).toHaveProperty('IsBiggerThanSugarAndFiber');
-  });
-
   it('should fail if calories are negative', async () => {
     dto = Object.assign(new CreateIngredientDto(), dto, {
       calories: -10,
