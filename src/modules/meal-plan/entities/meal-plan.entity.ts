@@ -1,5 +1,6 @@
 import { User } from '../../auth/entities';
 import {
+  Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
@@ -21,6 +22,9 @@ export class MealPlan {
     cascade: true,
   })
   mealPlanMeals: MealPlanMeal[];
+
+  @Column()
+  name: string;
 
   @ManyToOne(() => User, (user) => user.meals)
   @JoinColumn()

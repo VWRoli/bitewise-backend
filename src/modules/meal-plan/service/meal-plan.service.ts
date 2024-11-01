@@ -48,6 +48,7 @@ export class MealPlanService {
 
     const meals = await this.mealService.findMealsByIds(user.id, data.mealIds);
     const mealPlan = this.repository.create({
+      name: data.name,
       user: user,
     });
 
