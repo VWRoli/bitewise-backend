@@ -23,6 +23,7 @@ export class IngredientService {
   ) {}
 
   async getAll(userId: number): Promise<IngredientResponseDto[]> {
+    console.log(userId);
     const ingredients = await this.repository.find({
       where: { user: { id: userId } },
     });

@@ -19,6 +19,8 @@ import {
   UpdateMealPlanDto,
 } from '../dto';
 import { MealPlanService } from '../service';
+import { CurrentUser } from '../../auth/decorators';
+import { User } from '../../auth/entities';
 
 @ApiTags('meal-plan')
 @UseGuards(JwtGuard, ThrottlerGuard)
@@ -32,10 +34,10 @@ export class MealPlanController {
     return this.mealPlanService.getOne(mealPlanId);
   }
 
-  @Get('/all/:userId')
+  @Get()
   @ApiOkResponse({ type: [MealPlanResponseDto] })
-  getAllMealPlan(@Param('userId') userId: number) {
-    return this.mealPlanService.getAll(userId);
+  getAllMealPlan(@CurrentUser() user: User) {
+    return this.mealPlanService.getAll(user.id);
   }
 
   @Post()

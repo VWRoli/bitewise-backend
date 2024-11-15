@@ -9,7 +9,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { UserService } from '../service';
 import { JwtGuard } from '../../auth/guard';
-import { GetUser } from '../../auth/decorators';
+import { CurrentUser } from '../../auth/decorators';
 import { User } from '../../auth/entities';
 import { ThrottlerGuard } from '@nestjs/throttler';
 
@@ -19,13 +19,13 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @Get('me')
-  getMe(@GetUser() user: User) {
+  getMe(@CurrentUser() user: User) {
     return user;
   }
 
   @Delete('me')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteMe(@GetUser() user: User) {
+  deleteMe(@CurrentUser() user: User) {
     return this.userService.deleteOne(user.id);
   }
 }

@@ -14,17 +14,23 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     config: ConfigService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([
-        (request) => {
-          let token = null;
-          if (request && request.cookies) {
-            token = request.cookies['accessToken'];
-          }
-          return token;
-        },
-      ]),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: config.get('ACCESS_TOKEN_SECRET'),
+      repository,
     });
+    //!For getting the token from request cookies
+    // super({
+    //   jwtFromRequest: ExtractJwt.fromExtractors([
+    //     (request) => {
+    //       let token = null;
+    //       if (request && request.cookies) {
+    //         token = request.cookies['accessToken'];
+    //       }
+    //       return token;
+    //     },
+    //   ]),
+    //   secretOrKey: config.get('ACCESS_TOKEN_SECRET'),
+    // });
   }
 
   async validate(payload: ICurrentUser) {

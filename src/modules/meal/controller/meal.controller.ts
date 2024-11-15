@@ -15,6 +15,8 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 import { JwtGuard } from '../../auth/guard';
 import { CreateMealDto, MealResponseDto, UpdateMealDto } from '../dto';
 import { MealService } from '../service';
+import { CurrentUser } from '../../auth/decorators';
+import { User } from '../../auth/entities';
 
 @ApiTags('meal')
 @UseGuards(JwtGuard, ThrottlerGuard)
@@ -28,10 +30,10 @@ export class MealController {
     return this.mealService.getOne(mealId);
   }
 
-  @Get('/all/:userId')
+  @Get()
   @ApiOkResponse({ type: [MealResponseDto] })
-  getAllMeal(@Param('userId') userId: number) {
-    return this.mealService.getAll(userId);
+  getAllMeal(@CurrentUser() user: User) {
+    return this.mealService.getAll(user.id);
   }
 
   @Post()

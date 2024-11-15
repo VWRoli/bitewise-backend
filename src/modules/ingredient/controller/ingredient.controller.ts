@@ -19,6 +19,8 @@ import {
   IngredientResponseDto,
   UpdateIngredientDto,
 } from '../dto';
+import { CurrentUser } from '../../auth/decorators';
+import { User } from '../../auth/entities';
 
 @ApiTags('ingredient')
 @UseGuards(JwtGuard, ThrottlerGuard)
@@ -26,10 +28,11 @@ import {
 export class IngredientController {
   constructor(private readonly ingredientService: IngredientService) {}
 
-  @Get(':userId')
+  @Get()
   @ApiOkResponse({ type: [IngredientResponseDto] })
-  getAllIngredient(@Param('userId') userId: number) {
-    return this.ingredientService.getAll(userId);
+  getAllIngredient(@CurrentUser() user: User) {
+    console.log(user);
+    return this.ingredientService.getAll(user.id);
   }
   @Post()
   @ApiOkResponse({ type: IngredientResponseDto })
