@@ -5,15 +5,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  CreateIngredientDto,
-  IngredientResponseDto,
-  UpdateIngredientDto,
-} from '../dto';
+import { CreateIngredientDto, UpdateIngredientDto } from '../dto';
 import { Ingredient } from '../entities';
 import { Repository } from 'typeorm';
 import { UserService } from '../../user/service';
-import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class IngredientService {
@@ -23,7 +18,7 @@ export class IngredientService {
     private readonly userService: UserService,
   ) {}
 
-  async getAll(userId: number): Promise<IngredientResponseDto[]> {
+  async getAll(userId: number): Promise<Ingredient[]> {
     const ingredients = await this.repository.find({
       where: { user: { id: userId } },
     });
@@ -31,7 +26,7 @@ export class IngredientService {
     return ingredients;
   }
 
-  async createOne(data: CreateIngredientDto): Promise<IngredientResponseDto> {
+  async createOne(data: CreateIngredientDto): Promise<Ingredient> {
     const user = await this.userService.validateUser(data.userId);
 
     await this.checkIfIngredientExists(data);
@@ -40,14 +35,14 @@ export class IngredientService {
 
     const savedIngredient = await this.repository.save(ingredient);
 
-    return plainToClass(IngredientResponseDto, savedIngredient);
+    return savedIngredient;
   }
 
   async updateOne(
     id: number,
     data: UpdateIngredientDto,
     userId: number,
-  ): Promise<IngredientResponseDto> {
+  ): Promise<Ingredient> {
     const currentIngredient = await this.getCurrentIngredient(id);
 
     await this.checkIngredientOwner(currentIngredient, userId);
@@ -65,7 +60,7 @@ export class IngredientService {
     };
 
     const savedIngredient = this.repository.save(updatedIngredient);
-    return plainToClass(IngredientResponseDto, savedIngredient);
+    return savedIngredient;
   }
 
   async deleteOne(id: number, userId: number) {
