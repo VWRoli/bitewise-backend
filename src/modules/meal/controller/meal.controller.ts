@@ -26,8 +26,8 @@ export class MealController {
 
   @Get(':mealId')
   @ApiOkResponse({ type: MealResponseDto })
-  getOneMeal(@Param('mealId') mealId: number) {
-    return this.mealService.getOne(mealId);
+  getOneMeal(@CurrentUser() user: User, @Param('mealId') mealId: number) {
+    return this.mealService.getOne(mealId, user.id);
   }
 
   @Get()
@@ -44,13 +44,17 @@ export class MealController {
 
   @Patch(':mealId')
   @ApiOkResponse({ type: MealResponseDto })
-  updateMeal(@Param('mealId') mealId: number, @Body() body: UpdateMealDto) {
-    return this.mealService.updateOne(mealId, body);
+  updateMeal(
+    @CurrentUser() user: User,
+    @Param('mealId') mealId: number,
+    @Body() body: UpdateMealDto,
+  ) {
+    return this.mealService.updateOne(mealId, body, user.id);
   }
 
   @Delete(':mealId')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteMeal(@Param('mealId') mealId: number) {
-    return this.mealService.deleteOne(mealId);
+  deleteMeal(@CurrentUser() user: User, @Param('mealId') mealId: number) {
+    return this.mealService.deleteOne(mealId, user.id);
   }
 }

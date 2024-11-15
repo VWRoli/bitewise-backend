@@ -31,7 +31,6 @@ export class IngredientController {
   @Get()
   @ApiOkResponse({ type: [IngredientResponseDto] })
   getAllIngredient(@CurrentUser() user: User) {
-    console.log(user);
     return this.ingredientService.getAll(user.id);
   }
   @Post()
@@ -45,13 +44,17 @@ export class IngredientController {
   updateIngredient(
     @Param('ingredientId') ingredientId: number,
     @Body() body: UpdateIngredientDto,
+    @CurrentUser() user: User,
   ) {
-    return this.ingredientService.updateOne(ingredientId, body);
+    return this.ingredientService.updateOne(ingredientId, body, user.id);
   }
 
   @Delete(':ingredientId')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteIngredient(@Param('ingredientId') ingredientId: number) {
-    return this.ingredientService.deleteOne(ingredientId);
+  deleteIngredient(
+    @Param('ingredientId') ingredientId: number,
+    @CurrentUser() user: User,
+  ) {
+    return this.ingredientService.deleteOne(ingredientId, user.id);
   }
 }

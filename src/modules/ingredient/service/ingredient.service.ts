@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -23,7 +24,6 @@ export class IngredientService {
   ) {}
 
   async getAll(userId: number): Promise<IngredientResponseDto[]> {
-    console.log(userId);
     const ingredients = await this.repository.find({
       where: { user: { id: userId } },
     });
@@ -46,8 +46,11 @@ export class IngredientService {
   async updateOne(
     id: number,
     data: UpdateIngredientDto,
+    userId: number,
   ): Promise<IngredientResponseDto> {
     const currentIngredient = await this.getCurrentIngredient(id);
+
+    await this.checkIngredientOwner(currentIngredient, userId);
 
     if (currentIngredient.name !== data.name) {
       await this.checkIfIngredientExists({
@@ -65,9 +68,11 @@ export class IngredientService {
     return plainToClass(IngredientResponseDto, savedIngredient);
   }
 
-  async deleteOne(id: number) {
+  async deleteOne(id: number, userId: number) {
     try {
-      await this.getCurrentIngredient(id);
+      const ingredient = await this.getCurrentIngredient(id);
+
+      await this.checkIngredientOwner(ingredient, userId);
 
       await this.repository.softDelete(id);
     } catch (error) {
@@ -94,11 +99,20 @@ export class IngredientService {
   async getCurrentIngredient(id: number) {
     const currentIngredient = await this.repository.findOne({
       where: { id },
+      relations: ['user'],
     });
     if (!currentIngredient) {
       throw new NotFoundException('No ingredient found with the provided id.');
     }
 
     return currentIngredient;
+  }
+
+  private async checkIngredientOwner(ingredient: Ingredient, userId: number) {
+    if (ingredient.user.id !== userId) {
+      throw new ForbiddenException(
+        'You are not authorized to access this ingredient.',
+      );
+    }
   }
 }

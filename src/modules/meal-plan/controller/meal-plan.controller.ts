@@ -30,8 +30,11 @@ export class MealPlanController {
 
   @Get(':mealPlanId')
   @ApiOkResponse({ type: MealPlanResponseDto })
-  getOneMealPlan(@Param('mealPlanId') mealPlanId: number) {
-    return this.mealPlanService.getOne(mealPlanId);
+  getOneMealPlan(
+    @Param('mealPlanId') mealPlanId: number,
+    @CurrentUser() user: User,
+  ) {
+    return this.mealPlanService.getOne(mealPlanId, user.id);
   }
 
   @Get()
@@ -51,13 +54,17 @@ export class MealPlanController {
   updateMealPlan(
     @Param('mealPlanId') mealPlanId: number,
     @Body() body: UpdateMealPlanDto,
+    @CurrentUser() user: User,
   ) {
-    return this.mealPlanService.updateOne(mealPlanId, body);
+    return this.mealPlanService.updateOne(mealPlanId, body, user.id);
   }
 
   @Delete(':mealPlanId')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteMealPlan(@Param('mealPlanId') mealPlanId: number) {
-    return this.mealPlanService.deleteOne(mealPlanId);
+  deleteMealPlan(
+    @Param('mealPlanId') mealPlanId: number,
+    @CurrentUser() user: User,
+  ) {
+    return this.mealPlanService.deleteOne(mealPlanId, user.id);
   }
 }

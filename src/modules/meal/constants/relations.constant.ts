@@ -1,1 +1,5 @@
-export const MEAL_RELATIONS = ['mealIngredients', 'mealIngredients.ingredient'];
+export const MEAL_RELATIONS = [
+  'user',
+  'mealIngredients',
+  'mealIngredients.ingredient',
+];

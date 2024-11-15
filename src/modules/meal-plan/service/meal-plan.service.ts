@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserService } from '../../user/service';
@@ -21,7 +25,7 @@ export class MealPlanService {
     private readonly mealService: MealService,
   ) {}
 
-  async getOne(mealPlanId: number) {
+  async getOne(mealPlanId: number, userId: number) {
     const mealPlan = await this.repository.findOne({
       where: { id: mealPlanId },
       relations: MEAL_PLAN_RELATIONS,
@@ -29,6 +33,9 @@ export class MealPlanService {
     if (!mealPlan) {
       throw new NotFoundException(`No meal plan found with the provided ID.`);
     }
+
+    await this.checkMealPlanOwner(mealPlan, userId);
+
     return serializeMealPlan(mealPlan);
   }
 
@@ -68,8 +75,10 @@ export class MealPlanService {
     return serializeMealPlan(savedMealPlan);
   }
 
-  async updateOne(id: number, data: UpdateMealPlanDto) {
+  async updateOne(id: number, data: UpdateMealPlanDto, userId: number) {
     const currentMealPlan = await this.getCurrentMealPlan(id);
+
+    await this.checkMealPlanOwner(currentMealPlan, userId);
 
     const user = await this.userService.validateUser(data.userId);
 
@@ -92,9 +101,11 @@ export class MealPlanService {
     return serializeMealPlan(savedMealPlan);
   }
 
-  async deleteOne(id: number) {
+  async deleteOne(id: number, userId: number) {
     try {
-      await this.getCurrentMealPlan(id);
+      const currentMealPlan = await this.getCurrentMealPlan(id);
+
+      await this.checkMealPlanOwner(currentMealPlan, userId);
       await this.repository.softDelete(id);
     } catch (error) {
       throw error;
@@ -104,11 +115,20 @@ export class MealPlanService {
   async getCurrentMealPlan(id: number) {
     const currentMealPlan = await this.repository.findOne({
       where: { id },
+      relations: ['user'],
     });
     if (!currentMealPlan) {
       throw new NotFoundException('No meal plan found with the provided id.');
     }
 
     return currentMealPlan;
+  }
+
+  private async checkMealPlanOwner(mealPlan: MealPlan, userId: number) {
+    if (mealPlan.user.id !== userId) {
+      throw new ForbiddenException(
+        'You are not authorized to access this meal plan.',
+      );
+    }
   }
 }

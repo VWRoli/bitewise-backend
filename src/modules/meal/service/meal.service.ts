@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -29,7 +30,7 @@ export class MealService {
     private readonly userService: UserService,
   ) {}
 
-  async getOne(mealId: number): Promise<MealResponseDto> {
+  async getOne(mealId: number, userId: number): Promise<MealResponseDto> {
     const meal = await this.repository.findOne({
       where: { id: mealId },
       relations: MEAL_RELATIONS,
@@ -38,6 +39,8 @@ export class MealService {
     if (!meal) {
       throw new NotFoundException(`No meal found with the provided ID.`);
     }
+
+    await this.checkMealOwner(meal, userId);
 
     return serializeMeal(meal);
   }
@@ -72,8 +75,14 @@ export class MealService {
     return serializeMeal(savedMeal);
   }
 
-  async updateOne(id: number, data: UpdateMealDto): Promise<MealResponseDto> {
+  async updateOne(
+    id: number,
+    data: UpdateMealDto,
+    userId: number,
+  ): Promise<MealResponseDto> {
     const currentMeal = await this.getCurrentMeal(id);
+
+    await this.checkMealOwner(currentMeal, userId);
 
     const updatedMeal: Meal = {
       ...currentMeal,
@@ -98,9 +107,11 @@ export class MealService {
     return serializeMeal(savedMeal);
   }
 
-  async deleteOne(id: number) {
+  async deleteOne(id: number, userId: number) {
     try {
-      await this.getCurrentMeal(id);
+      const currentMeal = await this.getCurrentMeal(id);
+
+      await this.checkMealOwner(currentMeal, userId);
 
       await this.repository.softDelete(id);
     } catch (error) {
@@ -149,7 +160,7 @@ export class MealService {
   async getCurrentMeal(id: number) {
     const currentMeal = await this.repository.findOne({
       where: { id },
-      relations: ['mealIngredients'],
+      relations: ['user', 'mealIngredients'],
     });
     if (!currentMeal) {
       throw new NotFoundException('No meal found with the provided id.');
@@ -168,5 +179,13 @@ export class MealService {
     });
 
     return meals;
+  }
+
+  private async checkMealOwner(meal: Meal, userId: number) {
+    if (meal.user.id !== userId) {
+      throw new ForbiddenException(
+        'You are not authorized to access this meal.',
+      );
+    }
   }
 }
