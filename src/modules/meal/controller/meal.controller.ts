@@ -17,6 +17,7 @@ import { CreateMealDto, MealResponseDto, UpdateMealDto } from '../dto';
 import { MealService } from '../service';
 import { CurrentUser } from '../../auth/decorators';
 import { User } from '../../auth/entities';
+import { serializeMeal } from '../../meal/serializers';
 
 @ApiTags('meal')
 @UseGuards(JwtGuard, ThrottlerGuard)
@@ -26,35 +27,46 @@ export class MealController {
 
   @Get(':mealId')
   @ApiOkResponse({ type: MealResponseDto })
-  getOneMeal(@CurrentUser() user: User, @Param('mealId') mealId: number) {
-    return this.mealService.getOne(mealId, user.id);
+  async getOneMeal(
+    @CurrentUser() user: User,
+    @Param('mealId') mealId: number,
+  ): Promise<MealResponseDto> {
+    const meal = await this.mealService.getOne(mealId, user.id);
+    return serializeMeal(meal);
   }
 
   @Get()
   @ApiOkResponse({ type: [MealResponseDto] })
-  getAllMeal(@CurrentUser() user: User) {
-    return this.mealService.getAll(user.id);
+  async getAllMeal(@CurrentUser() user: User): Promise<MealResponseDto[]> {
+    const meals = await this.mealService.getAll(user.id);
+    const serializedMeals = meals.map((meal) => serializeMeal(meal));
+    return serializedMeals;
   }
 
   @Post()
   @ApiOkResponse({ type: MealResponseDto })
-  createMeal(@Body() dto: CreateMealDto) {
-    return this.mealService.createOne(dto);
+  async createMeal(@Body() dto: CreateMealDto): Promise<MealResponseDto> {
+    const meal = await this.mealService.createOne(dto);
+    return serializeMeal(meal);
   }
 
   @Patch(':mealId')
   @ApiOkResponse({ type: MealResponseDto })
-  updateMeal(
+  async updateMeal(
     @CurrentUser() user: User,
     @Param('mealId') mealId: number,
     @Body() body: UpdateMealDto,
-  ) {
-    return this.mealService.updateOne(mealId, body, user.id);
+  ): Promise<MealResponseDto> {
+    const meal = await this.mealService.updateOne(mealId, body, user.id);
+    return serializeMeal(meal);
   }
 
   @Delete(':mealId')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteMeal(@CurrentUser() user: User, @Param('mealId') mealId: number) {
+  deleteMeal(
+    @CurrentUser() user: User,
+    @Param('mealId') mealId: number,
+  ): Promise<void> {
     return this.mealService.deleteOne(mealId, user.id);
   }
 }

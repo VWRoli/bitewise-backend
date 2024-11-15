@@ -5,17 +5,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  CreateMealDto,
-  IngredientQuantityDto,
-  MealResponseDto,
-  UpdateMealDto,
-} from '../dto';
+import { CreateMealDto, IngredientQuantityDto, UpdateMealDto } from '../dto';
 import { Meal, MealIngredient } from '../entities';
 import { In, Repository } from 'typeorm';
 import { Ingredient } from '../../ingredient/entities';
 import { UserService } from '../../user/service';
-import { serializeMeal } from '../serializers/meal.serializer';
 import { MEAL_RELATIONS } from '../constants';
 
 @Injectable()
@@ -30,7 +24,7 @@ export class MealService {
     private readonly userService: UserService,
   ) {}
 
-  async getOne(mealId: number, userId: number): Promise<MealResponseDto> {
+  async getOne(mealId: number, userId: number): Promise<Meal> {
     const meal = await this.repository.findOne({
       where: { id: mealId },
       relations: MEAL_RELATIONS,
@@ -42,20 +36,19 @@ export class MealService {
 
     await this.checkMealOwner(meal, userId);
 
-    return serializeMeal(meal);
+    return meal;
   }
 
-  async getAll(userId: number): Promise<MealResponseDto[]> {
+  async getAll(userId: number): Promise<Meal[]> {
     const meals = await this.repository.find({
       where: { user: { id: userId } },
       relations: MEAL_RELATIONS,
     });
 
-    const serializedMeals = meals.map((meal) => serializeMeal(meal));
-    return serializedMeals;
+    return meals;
   }
 
-  async createOne(data: CreateMealDto): Promise<MealResponseDto> {
+  async createOne(data: CreateMealDto): Promise<Meal> {
     const user = await this.userService.validateUser(data.userId);
 
     await this.checkIfMealExists(data);
@@ -72,14 +65,14 @@ export class MealService {
 
     const savedMeal = await this.repository.save(meal);
 
-    return serializeMeal(savedMeal);
+    return savedMeal;
   }
 
   async updateOne(
     id: number,
     data: UpdateMealDto,
     userId: number,
-  ): Promise<MealResponseDto> {
+  ): Promise<Meal> {
     const currentMeal = await this.getCurrentMeal(id);
 
     await this.checkMealOwner(currentMeal, userId);
@@ -104,7 +97,7 @@ export class MealService {
 
     const savedMeal = await this.repository.save(updatedMeal);
 
-    return serializeMeal(savedMeal);
+    return savedMeal;
   }
 
   async deleteOne(id: number, userId: number) {
