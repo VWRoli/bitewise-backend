@@ -21,6 +21,7 @@ import {
 import { MealPlanService } from '../service';
 import { CurrentUser } from '../../auth/decorators';
 import { User } from '../../auth/entities';
+import { serializeMealPlan } from '../serializers';
 
 @ApiTags('meal-plan')
 @UseGuards(JwtGuard, ThrottlerGuard)
@@ -30,33 +31,44 @@ export class MealPlanController {
 
   @Get(':mealPlanId')
   @ApiOkResponse({ type: MealPlanResponseDto })
-  getOneMealPlan(
+  async getOneMealPlan(
     @Param('mealPlanId') mealPlanId: number,
     @CurrentUser() user: User,
   ) {
-    return this.mealPlanService.getOne(mealPlanId, user.id);
+    const mealPlan = await this.mealPlanService.getOne(mealPlanId, user.id);
+    return serializeMealPlan(mealPlan);
   }
 
   @Get()
   @ApiOkResponse({ type: [MealPlanResponseDto] })
-  getAllMealPlan(@CurrentUser() user: User) {
-    return this.mealPlanService.getAll(user.id);
+  async getAllMealPlan(@CurrentUser() user: User) {
+    const mealPlans = await this.mealPlanService.getAll(user.id);
+    const serializedMealPlans = mealPlans.map((mealPlan) =>
+      serializeMealPlan(mealPlan),
+    );
+    return serializedMealPlans;
   }
 
   @Post()
   @ApiOkResponse({ type: MealPlanResponseDto })
-  createMealPlan(@Body() dto: CreateMealPlanDto) {
-    return this.mealPlanService.createOne(dto);
+  async createMealPlan(@Body() dto: CreateMealPlanDto) {
+    const mealPlan = await this.mealPlanService.createOne(dto);
+    return serializeMealPlan(mealPlan);
   }
 
   @Patch(':mealPlanId')
   @ApiOkResponse({ type: MealPlanResponseDto })
-  updateMealPlan(
+  async updateMealPlan(
     @Param('mealPlanId') mealPlanId: number,
     @Body() body: UpdateMealPlanDto,
     @CurrentUser() user: User,
   ) {
-    return this.mealPlanService.updateOne(mealPlanId, body, user.id);
+    const mealPlan = await this.mealPlanService.updateOne(
+      mealPlanId,
+      body,
+      user.id,
+    );
+    return serializeMealPlan(mealPlan);
   }
 
   @Delete(':mealPlanId')
@@ -64,7 +76,7 @@ export class MealPlanController {
   deleteMealPlan(
     @Param('mealPlanId') mealPlanId: number,
     @CurrentUser() user: User,
-  ) {
+  ): Promise<void> {
     return this.mealPlanService.deleteOne(mealPlanId, user.id);
   }
 }

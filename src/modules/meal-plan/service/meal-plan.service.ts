@@ -7,13 +7,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserService } from '../../user/service';
 import { MealPlan, MealPlanMeal } from '../entities';
-import {
-  CreateMealPlanDto,
-  MealPlanResponseDto,
-  UpdateMealPlanDto,
-} from '../dto';
+import { CreateMealPlanDto, UpdateMealPlanDto } from '../dto';
 import { MealService } from '../../meal/service';
-import { serializeMealPlan } from '../serializers/meal-plan.serializer';
 import { MEAL_PLAN_RELATIONS } from '../constants';
 
 @Injectable()
@@ -36,21 +31,19 @@ export class MealPlanService {
 
     await this.checkMealPlanOwner(mealPlan, userId);
 
-    return serializeMealPlan(mealPlan);
+    return mealPlan;
   }
 
-  async getAll(userId: number): Promise<MealPlanResponseDto[]> {
+  async getAll(userId: number): Promise<MealPlan[]> {
     const mealPlans = await this.repository.find({
       where: { user: { id: userId } },
       relations: MEAL_PLAN_RELATIONS,
     });
-    const serializedMealPlans = mealPlans.map((mealPlan) =>
-      serializeMealPlan(mealPlan),
-    );
-    return serializedMealPlans;
+
+    return mealPlans;
   }
 
-  async createOne(data: CreateMealPlanDto): Promise<MealPlanResponseDto> {
+  async createOne(data: CreateMealPlanDto): Promise<MealPlan> {
     const user = await this.userService.validateUser(data.userId);
 
     const meals = await this.mealService.findMealsByIds(user.id, data.mealIds);
@@ -72,10 +65,14 @@ export class MealPlanService {
 
     const savedMealPlan = await this.repository.save(mealPlan);
 
-    return serializeMealPlan(savedMealPlan);
+    return savedMealPlan;
   }
 
-  async updateOne(id: number, data: UpdateMealPlanDto, userId: number) {
+  async updateOne(
+    id: number,
+    data: UpdateMealPlanDto,
+    userId: number,
+  ): Promise<MealPlan> {
     const currentMealPlan = await this.getCurrentMealPlan(id);
 
     await this.checkMealPlanOwner(currentMealPlan, userId);
@@ -98,10 +95,10 @@ export class MealPlanService {
 
     const savedMealPlan = await this.repository.save(updatedMealPlan);
 
-    return serializeMealPlan(savedMealPlan);
+    return savedMealPlan;
   }
 
-  async deleteOne(id: number, userId: number) {
+  async deleteOne(id: number, userId: number): Promise<void> {
     try {
       const currentMealPlan = await this.getCurrentMealPlan(id);
 
