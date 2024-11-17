@@ -8,16 +8,23 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { JwtGuard } from '../../auth/guard';
-import { CreateMealDto, MealResponseDto, UpdateMealDto } from '../dto';
+import {
+  CreateMealDto,
+  MealResponseDto,
+  UpdateMealDto,
+  PaginatedMealResponseDto,
+} from '../dto';
 import { MealService } from '../service';
 import { CurrentUser } from '../../auth/decorators';
 import { User } from '../../auth/entities';
 import { serializeMeal } from '../../meal/serializers';
+import { PaginationDto } from '../../../common/pagination/pagination.dto';
 
 @ApiTags('meal')
 @UseGuards(JwtGuard, ThrottlerGuard)
@@ -36,11 +43,14 @@ export class MealController {
   }
 
   @Get()
-  @ApiOkResponse({ type: [MealResponseDto] })
-  async getAllMeal(@CurrentUser() user: User): Promise<MealResponseDto[]> {
-    const meals = await this.mealService.getAll(user.id);
-    const serializedMeals = meals.map((meal) => serializeMeal(meal));
-    return serializedMeals;
+  @ApiOkResponse({ type: [PaginatedMealResponseDto] })
+  async getAllMeal(
+    @CurrentUser() user: User,
+    @Query() paginationDto: PaginationDto,
+  ): Promise<PaginatedMealResponseDto> {
+    const mealsData = await this.mealService.getAll(user.id, paginationDto);
+    const serializedMeals = mealsData.data.map((meal) => serializeMeal(meal));
+    return { data: serializedMeals, count: mealsData.count };
   }
 
   @Post()

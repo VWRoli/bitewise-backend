@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
@@ -18,10 +19,12 @@ import {
   CreateIngredientDto,
   IngredientResponseDto,
   UpdateIngredientDto,
+  PaginatedIngredientDto,
 } from '../dto';
 import { CurrentUser } from '../../auth/decorators';
 import { User } from '../../auth/entities';
 import { plainToClass } from 'class-transformer';
+import { PaginationDto } from '../../../common/pagination/pagination.dto';
 
 @ApiTags('ingredient')
 @UseGuards(JwtGuard, ThrottlerGuard)
@@ -30,12 +33,14 @@ export class IngredientController {
   constructor(private readonly ingredientService: IngredientService) {}
 
   @Get()
-  @ApiOkResponse({ type: [IngredientResponseDto] })
+  @ApiOkResponse({ type: PaginatedIngredientDto })
   getAllIngredient(
     @CurrentUser() user: User,
-  ): Promise<IngredientResponseDto[]> {
-    return this.ingredientService.getAll(user.id);
+    @Query() paginationDto: PaginationDto,
+  ): Promise<PaginatedIngredientDto> {
+    return this.ingredientService.getAll(user.id, paginationDto);
   }
+
   @Post()
   @ApiOkResponse({ type: IngredientResponseDto })
   async createIngredient(

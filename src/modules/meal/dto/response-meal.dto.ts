@@ -11,6 +11,6 @@ export class MealResponseDto {
   @ApiProperty({ example: 'Fruit Salad', description: 'Name of the meal' })
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: [MealIngredientResponseDto] })
   mealIngredients: MealIngredientResponseDto[];
 }

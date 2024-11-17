@@ -11,6 +11,7 @@ import { In, Repository } from 'typeorm';
 import { Ingredient } from '../../ingredient/entities';
 import { UserService } from '../../user/service';
 import { MEAL_RELATIONS } from '../constants';
+import { PaginationDto } from '../../../common/pagination/pagination.dto';
 
 @Injectable()
 export class MealService {
@@ -39,13 +40,23 @@ export class MealService {
     return meal;
   }
 
-  async getAll(userId: number): Promise<Meal[]> {
-    const meals = await this.repository.find({
+  async getAll(
+    userId: number,
+    paginationDto: PaginationDto,
+  ): Promise<{ data: Meal[]; count: number }> {
+    const { limit, offset } = paginationDto;
+
+    const [data, count] = await this.repository.findAndCount({
       where: { user: { id: userId } },
       relations: MEAL_RELATIONS,
+      take: limit,
+      skip: offset,
     });
 
-    return meals;
+    return {
+      data,
+      count,
+    };
   }
 
   async createOne(data: CreateMealDto): Promise<Meal> {

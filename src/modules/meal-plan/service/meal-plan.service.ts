@@ -10,6 +10,7 @@ import { MealPlan, MealPlanMeal } from '../entities';
 import { CreateMealPlanDto, UpdateMealPlanDto } from '../dto';
 import { MealService } from '../../meal/service';
 import { MEAL_PLAN_RELATIONS } from '../constants';
+import { PaginationDto } from '../../../common/pagination/pagination.dto';
 
 @Injectable()
 export class MealPlanService {
@@ -34,13 +35,23 @@ export class MealPlanService {
     return mealPlan;
   }
 
-  async getAll(userId: number): Promise<MealPlan[]> {
-    const mealPlans = await this.repository.find({
+  async getAll(
+    userId: number,
+    paginationDto: PaginationDto,
+  ): Promise<{ data: MealPlan[]; count: number }> {
+    const { limit, offset } = paginationDto;
+
+    const [data, count] = await this.repository.findAndCount({
       where: { user: { id: userId } },
       relations: MEAL_PLAN_RELATIONS,
+      take: limit,
+      skip: offset,
     });
 
-    return mealPlans;
+    return {
+      data,
+      count,
+    };
   }
 
   async createOne(data: CreateMealPlanDto): Promise<MealPlan> {

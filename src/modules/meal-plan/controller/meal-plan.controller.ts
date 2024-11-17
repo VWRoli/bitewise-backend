@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
@@ -16,12 +17,14 @@ import { JwtGuard } from '../../auth/guard';
 import {
   CreateMealPlanDto,
   MealPlanResponseDto,
+  PaginatedMealPlanResponseDto,
   UpdateMealPlanDto,
 } from '../dto';
 import { MealPlanService } from '../service';
 import { CurrentUser } from '../../auth/decorators';
 import { User } from '../../auth/entities';
 import { serializeMealPlan } from '../serializers';
+import { PaginationDto } from '../../../common/pagination/pagination.dto';
 
 @ApiTags('meal-plan')
 @UseGuards(JwtGuard, ThrottlerGuard)
@@ -40,13 +43,19 @@ export class MealPlanController {
   }
 
   @Get()
-  @ApiOkResponse({ type: [MealPlanResponseDto] })
-  async getAllMealPlan(@CurrentUser() user: User) {
-    const mealPlans = await this.mealPlanService.getAll(user.id);
-    const serializedMealPlans = mealPlans.map((mealPlan) =>
+  @ApiOkResponse({ type: [PaginatedMealPlanResponseDto] })
+  async getAllMealPlan(
+    @CurrentUser() user: User,
+    @Query() paginationDto: PaginationDto,
+  ): Promise<PaginatedMealPlanResponseDto> {
+    const mealPlansData = await this.mealPlanService.getAll(
+      user.id,
+      paginationDto,
+    );
+    const serializedMealPlans = mealPlansData.data.map((mealPlan) =>
       serializeMealPlan(mealPlan),
     );
-    return serializedMealPlans;
+    return { data: serializedMealPlans, count: mealPlansData.count };
   }
 
   @Post()

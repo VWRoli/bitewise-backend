@@ -5,10 +5,15 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateIngredientDto, UpdateIngredientDto } from '../dto';
+import {
+  CreateIngredientDto,
+  PaginatedIngredientDto,
+  UpdateIngredientDto,
+} from '../dto';
 import { Ingredient } from '../entities';
 import { Repository } from 'typeorm';
 import { UserService } from '../../user/service';
+import { PaginationDto } from '../../../common/pagination/pagination.dto';
 
 @Injectable()
 export class IngredientService {
@@ -18,12 +23,22 @@ export class IngredientService {
     private readonly userService: UserService,
   ) {}
 
-  async getAll(userId: number): Promise<Ingredient[]> {
-    const ingredients = await this.repository.find({
+  async getAll(
+    userId: number,
+    paginationDto: PaginationDto,
+  ): Promise<PaginatedIngredientDto> {
+    const { limit, offset } = paginationDto;
+
+    const [data, count] = await this.repository.findAndCount({
       where: { user: { id: userId } },
+      take: limit,
+      skip: offset,
     });
 
-    return ingredients;
+    return {
+      data,
+      count,
+    };
   }
 
   async createOne(data: CreateIngredientDto): Promise<Ingredient> {
