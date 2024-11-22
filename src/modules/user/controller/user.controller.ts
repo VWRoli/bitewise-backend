@@ -19,7 +19,9 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @Get('me')
-  getMe(@CurrentUser() user: User) {
+  getMe(@CurrentUser() currentUser: User) {
+    const user = currentUser;
+    delete user.refreshToken;
     return user;
   }
 
