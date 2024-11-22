@@ -33,6 +33,9 @@ export class IngredientService {
       where: { user: { id: userId } },
       take: limit,
       skip: offset,
+      order: {
+        createTimeStamp: 'DESC',
+      },
     });
 
     return {
