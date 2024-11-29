@@ -46,6 +46,9 @@ export class MealPlanService {
       relations: MEAL_PLAN_RELATIONS,
       take: limit,
       skip: offset,
+      order: {
+        createTimeStamp: 'DESC',
+      },
     });
 
     return {

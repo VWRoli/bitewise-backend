@@ -51,6 +51,9 @@ export class MealService {
       relations: MEAL_RELATIONS,
       take: limit,
       skip: offset,
+      order: {
+        createTimeStamp: 'DESC',
+      },
     });
 
     return {
