@@ -14,7 +14,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../services';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { Response } from 'express';
-import { GoogleAuthGuard } from '../guard';
+import { FacebookAuthGuard, GoogleAuthGuard } from '../guard';
 import { config } from 'src/config';
 
 @UseGuards(ThrottlerGuard)
@@ -47,5 +47,20 @@ export class AuthController {
     const user = req.user;
     await this.authService.googleSignIn(user, res);
     res.redirect(`${config.FRONTEND_URL}/dashboard`);
+  }
+
+  @Get('facebook/login')
+  @UseGuards(FacebookAuthGuard)
+  async facebookLogin() {
+    // Initiates Facebook OAuth2 login
+  }
+
+  @Get('facebook/callback')
+  @UseGuards(FacebookAuthGuard)
+  async facebookLoginCallback(@Req() req, @Res() res: Response) {
+    const user = req.user;
+
+    await this.authService.facebookSignIn(user, res);
+    res.redirect(`${config.FRONTEND_URL}/dashboard?token=${req.accessToken}`);
   }
 }

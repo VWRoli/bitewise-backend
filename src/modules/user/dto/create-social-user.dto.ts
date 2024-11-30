@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateSocialUserDto {
   @IsEmail()
@@ -9,7 +9,11 @@ export class CreateSocialUserDto {
   @Transform(({ value }) => value.trim())
   readonly email: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   readonly googleId: string;
+
+  @IsOptional()
+  @IsString()
+  readonly facebookId: string;
 }

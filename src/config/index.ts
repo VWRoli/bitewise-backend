@@ -26,6 +26,11 @@ export const config: IConfig = {
     GOOGLE_SECRET: process.env.GOOGLE_SECRET,
     GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL,
   },
+  FACEBOOK: {
+    FACEBOOK_CLIENT_ID: process.env.FACEBOOK_CLIENT_ID,
+    FACEBOOK_SECRET: process.env.FACEBOOK_SECRET,
+    FACEBOOK_CALLBACK_URL: process.env.FACEBOOK_CALLBACK_URL,
+  },
 };
 
 export interface IConfig {
@@ -53,5 +58,10 @@ export interface IConfig {
     GOOGLE_CLIENT_ID: string;
     GOOGLE_SECRET: string;
     GOOGLE_CALLBACK_URL: string;
+  };
+  FACEBOOK: {
+    FACEBOOK_CLIENT_ID: string;
+    FACEBOOK_SECRET: string;
+    FACEBOOK_CALLBACK_URL: string;
   };
 }

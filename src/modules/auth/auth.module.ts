@@ -3,18 +3,20 @@ import { AuthController } from './controller/auth.controller';
 import { User } from './entities';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
-import { GoogleStrategy, JwtStrategy } from './strategy';
+import { FacebookStrategy, GoogleStrategy, JwtStrategy } from './strategy';
 import { AuthService } from './services';
 import { UserService } from '../user/service';
 import { TokenService } from '../token/services';
 import { ConfigModule } from '@nestjs/config';
 import googleOauthConfig from './config/google-oauth.config';
+import facebookOauthConfig from './config/facebook-oauth.config';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
     JwtModule.register({}),
     ConfigModule.forFeature(googleOauthConfig),
+    ConfigModule.forFeature(facebookOauthConfig),
   ],
   controllers: [AuthController],
   providers: [
@@ -23,6 +25,7 @@ import googleOauthConfig from './config/google-oauth.config';
     UserService,
     TokenService,
     GoogleStrategy,
+    FacebookStrategy,
   ],
   exports: [AuthService],
 })

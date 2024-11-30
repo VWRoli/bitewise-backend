@@ -103,12 +103,13 @@ export class AuthService {
     );
   }
 
-  public async validateGoogleUser(googleUser: CreateSocialUserDto) {
-    const user = await this.userService.findByEmail(googleUser.email);
+  public async validateSocialUser(socialUser: CreateSocialUserDto) {
+    const user = await this.userService.findByEmail(socialUser.email);
 
     const userData = {
-      email: googleUser.email,
-      googleId: googleUser.googleId,
+      email: socialUser.email,
+      googleId: socialUser.googleId,
+      facebookId: socialUser.facebookId,
     };
 
     if (user) {
@@ -121,7 +122,20 @@ export class AuthService {
   }
 
   async googleSignIn(socialUser: CreateSocialUserDto, res: Response) {
-    const user = await this.validateGoogleUser(socialUser);
+    const user = await this.validateSocialUser(socialUser);
+
+    const { accessToken, refreshToken } = await this.tokenService.getTokens(
+      user.id,
+      user.email,
+    );
+
+    await this.tokenService.updateRefreshTokenHash(user.id, refreshToken);
+
+    return this.tokenService.setTokensAsCookies(accessToken, refreshToken, res);
+  }
+
+  async facebookSignIn(socialUser: CreateSocialUserDto, res: Response) {
+    const user = await this.validateSocialUser(socialUser);
 
     const { accessToken, refreshToken } = await this.tokenService.getTokens(
       user.id,
