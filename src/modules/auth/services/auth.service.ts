@@ -12,6 +12,7 @@ import { Response } from 'express';
 import { UserService } from '../../user/service';
 import { ExpirationStrategy } from '../../token/enum';
 import { TokenService } from '../../token/services';
+import { CreateSocialUserDto } from '../../user/dto';
 
 @Injectable()
 export class AuthService {
@@ -102,20 +103,16 @@ export class AuthService {
     );
   }
 
-  public async validateGoogleUser(googleuser: CreateUserDto) {
-    const user = await this.userService.findByEmail(googleuser.email);
+  public async validateGoogleUser(googleUser: CreateSocialUserDto) {
+    const user = await this.userService.findByEmail(googleUser.email);
 
     if (user) return user;
 
-    return await this.userService.createUser(googleuser);
+    return await this.userService.createUser(googleUser);
   }
 
   async googleSignIn(email: string, res: Response) {
-    const user = await this.repository.findOne({
-      where: { email },
-    });
-
-    if (!user) throw new ForbiddenException('Credentials incorrect');
+    const user = await this.validateGoogleUser({ email });
 
     const { accessToken, refreshToken } = await this.tokenService.getTokens(
       user.id,

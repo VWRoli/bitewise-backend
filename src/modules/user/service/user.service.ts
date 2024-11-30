@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../auth/entities';
-import { UpdateUserDto } from '../dto';
+import { CreateSocialUserDto, UpdateUserDto } from '../dto';
 import { CreateUserDto } from 'src/modules/auth/dto';
 
 @Injectable()
@@ -61,7 +61,7 @@ export class UserService {
     return user;
   }
 
-  async createUser(user: CreateUserDto) {
+  async createUser(user: CreateSocialUserDto) {
     return this.repository.save(user);
   }
 }

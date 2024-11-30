@@ -20,7 +20,12 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(profile: any, done: VerifyCallback): Promise<any> {
+  async validate(
+    _: string,
+    __: string,
+    profile: any,
+    done: VerifyCallback,
+  ): Promise<any> {
     const { emails } = profile;
     const user = {
       email: emails[0].value,
