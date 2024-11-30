@@ -10,6 +10,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Meal } from '../../meal/entities';
+import { EAuthProvider } from '../enums';
 
 @Entity()
 export class User {
@@ -32,8 +33,16 @@ export class User {
   @Column({ nullable: true })
   hash: string;
 
+  @Column({
+    type: 'enum',
+    enum: EAuthProvider,
+    enumName: 'EAuthProvider',
+    default: EAuthProvider.PASSWORD,
+  })
+  provider: string;
+
   @Column({ nullable: true })
-  googleId: string;
+  providerId: string;
 
   @CreateDateColumn()
   createTimeStamp: Date;

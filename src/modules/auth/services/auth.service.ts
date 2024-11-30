@@ -13,6 +13,7 @@ import { UserService } from '../../user/service';
 import { ExpirationStrategy } from '../../token/enum';
 import { TokenService } from '../../token/services';
 import { CreateSocialUserDto } from '../../user/dto';
+import { EAuthProvider } from '../enums';
 
 @Injectable()
 export class AuthService {
@@ -106,17 +107,27 @@ export class AuthService {
   public async validateGoogleUser(googleUser: CreateSocialUserDto) {
     const user = await this.userService.findByEmail(googleUser.email);
 
-    if (user) return user;
+    const userData = {
+      email: googleUser.email,
+      provider: EAuthProvider.GOOGLE,
+      providerId: googleUser.providerId,
+    };
 
-    return await this.userService.createUser(googleUser);
+    if (user) {
+      const updatedUser = await this.userService.update(user.id, userData);
+      return updatedUser;
+    }
+
+    const newUser = await this.userService.createUser(userData);
+    return newUser;
   }
 
-  async googleSignIn(email: string, res: Response) {
-    const user = await this.validateGoogleUser({ email });
+  async googleSignIn(socialUser: CreateSocialUserDto, res: Response) {
+    const user = await this.validateGoogleUser(socialUser);
 
     const { accessToken, refreshToken } = await this.tokenService.getTokens(
       user.id,
-      email,
+      user.email,
     );
 
     await this.tokenService.updateRefreshTokenHash(user.id, refreshToken);

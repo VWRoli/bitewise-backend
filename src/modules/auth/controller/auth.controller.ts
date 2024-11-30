@@ -45,7 +45,7 @@ export class AuthController {
   @UseGuards(GoogleAuthGuard)
   async googleLoginCallback(@Req() req, @Res() res: Response) {
     const user = req.user;
-    await this.authService.googleSignIn(user.email, res);
+    await this.authService.googleSignIn(user, res);
     res.redirect(`${config.FRONTEND_URL}/dashboard`);
   }
 }

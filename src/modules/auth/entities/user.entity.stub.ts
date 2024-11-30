@@ -1,3 +1,4 @@
+import { EAuthProvider } from '../enums';
 import { User } from './user.entity';
 
 export function stubUser(override: Partial<User> = {}): User {
@@ -8,7 +9,8 @@ export function stubUser(override: Partial<User> = {}): User {
     hash: 'hashedPassword',
     meals: [],
     refreshToken: null,
-    googleId: null,
+    providerId: null,
+    provider: EAuthProvider.PASSWORD,
     createTimeStamp: new Date(),
     updateTimeStamp: new Date(),
     deleteTimeStamp: null,
