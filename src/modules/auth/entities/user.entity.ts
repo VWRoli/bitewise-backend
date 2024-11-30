@@ -29,8 +29,11 @@ export class User {
   @Column({ default: null })
   refreshToken: string | null;
 
-  @Column()
+  @Column({ nullable: true })
   hash: string;
+
+  @Column({ nullable: true })
+  googleId: string;
 
   @CreateDateColumn()
   createTimeStamp: Date;

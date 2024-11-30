@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../auth/entities';
 import { UpdateUserDto } from '../dto';
+import { CreateUserDto } from 'src/modules/auth/dto';
 
 @Injectable()
 export class UserService {
@@ -52,5 +53,15 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async findByEmail(email: string) {
+    const user = this.repository.findOne({ where: { email } });
+    if (!user) throw new NotFoundException();
+    return user;
+  }
+
+  async createUser(user: CreateUserDto) {
+    return this.repository.save(user);
   }
 }

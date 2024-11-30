@@ -8,6 +8,7 @@ export function stubUser(override: Partial<User> = {}): User {
     hash: 'hashedPassword',
     meals: [],
     refreshToken: null,
+    googleId: null,
     createTimeStamp: new Date(),
     updateTimeStamp: new Date(),
     deleteTimeStamp: null,

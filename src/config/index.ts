@@ -21,6 +21,11 @@ export const config: IConfig = {
     DATABASE: process.env.MYSQL_DATABASE,
     USER: process.env.MYSQL_USER,
   },
+  GOOGLE: {
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    GOOGLE_SECRET: process.env.GOOGLE_SECRET,
+    GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL,
+  },
 };
 
 export interface IConfig {
@@ -43,5 +48,10 @@ export interface IConfig {
     ROOT_PASSWORD: string;
     DATABASE: string;
     USER: string;
+  };
+  GOOGLE: {
+    GOOGLE_CLIENT_ID: string;
+    GOOGLE_SECRET: string;
+    GOOGLE_CALLBACK_URL: string;
   };
 }

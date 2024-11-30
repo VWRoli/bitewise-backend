@@ -101,4 +101,29 @@ export class AuthService {
       ExpirationStrategy.IMMEDIATE,
     );
   }
+
+  public async validateGoogleUser(googleuser: CreateUserDto) {
+    const user = await this.userService.findByEmail(googleuser.email);
+
+    if (user) return user;
+
+    return await this.userService.createUser(googleuser);
+  }
+
+  async googleSignIn(email: string, res: Response) {
+    const user = await this.repository.findOne({
+      where: { email },
+    });
+
+    if (!user) throw new ForbiddenException('Credentials incorrect');
+
+    const { accessToken, refreshToken } = await this.tokenService.getTokens(
+      user.id,
+      email,
+    );
+
+    await this.tokenService.updateRefreshTokenHash(user.id, refreshToken);
+
+    return this.tokenService.setTokensAsCookies(accessToken, refreshToken, res);
+  }
 }

@@ -54,8 +54,18 @@ export class TokenService {
     user: User,
     expirationStrategy: ExpirationStrategy = ExpirationStrategy.DEFAULT,
   ) {
-    const cookieOptions = this.getDefaultCookieOptions();
+    this.setTokensAsCookies(accessToken, refreshToken, res, expirationStrategy);
 
+    return this.sendResponse(res, user);
+  }
+
+  public setTokensAsCookies(
+    accessToken: string,
+    refreshToken: string,
+    res: Response,
+    expirationStrategy: ExpirationStrategy = ExpirationStrategy.DEFAULT,
+  ) {
+    const cookieOptions = this.getDefaultCookieOptions();
     const { accessExpiration, refreshExpiration } =
       this.calculateExpirationTimes(expirationStrategy);
 
@@ -68,8 +78,6 @@ export class TokenService {
       ...cookieOptions,
       expires: new Date(refreshExpiration),
     });
-
-    return this.sendResponse(res, user);
   }
 
   private getDefaultCookieOptions(): CookieOptions {
