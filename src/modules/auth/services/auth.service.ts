@@ -13,7 +13,6 @@ import { UserService } from '../../user/service';
 import { ExpirationStrategy } from '../../token/enum';
 import { TokenService } from '../../token/services';
 import { CreateSocialUserDto } from '../../user/dto';
-import { EAuthProvider } from '../enums';
 
 @Injectable()
 export class AuthService {
@@ -109,8 +108,7 @@ export class AuthService {
 
     const userData = {
       email: googleUser.email,
-      provider: EAuthProvider.GOOGLE,
-      providerId: googleUser.providerId,
+      googleId: googleUser.googleId,
     };
 
     if (user) {

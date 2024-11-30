@@ -7,8 +7,5 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   refreshToken?: string;
 
   @IsString()
-  provider?: string;
-
-  @IsString()
-  providerId?: string;
+  googleId?: string;
 }

@@ -11,5 +11,5 @@ export class CreateSocialUserDto {
 
   @IsNotEmpty()
   @IsString()
-  readonly providerId: string;
+  readonly googleId: string;
 }
