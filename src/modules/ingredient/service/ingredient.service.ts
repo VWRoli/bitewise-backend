@@ -14,6 +14,7 @@ import { Ingredient } from '../entities';
 import { Repository } from 'typeorm';
 import { UserService } from '../../user/service';
 import { PaginationDto } from '../../../common/pagination/pagination.dto';
+import { createQueryObject } from '../../../common/pagination/helpers';
 
 @Injectable()
 export class IngredientService {
@@ -27,15 +28,13 @@ export class IngredientService {
     userId: number,
     paginationDto: PaginationDto,
   ): Promise<PaginatedIngredientDto> {
-    const { limit, offset } = paginationDto;
+    const { order, take, skip } = createQueryObject(paginationDto);
 
     const [data, count] = await this.repository.findAndCount({
       where: { user: { id: userId } },
-      take: limit,
-      skip: offset,
-      order: {
-        createTimeStamp: 'DESC',
-      },
+      take,
+      skip,
+      ...(order && { order }),
     });
 
     return {

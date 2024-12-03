@@ -11,6 +11,7 @@ import { CreateMealPlanDto, UpdateMealPlanDto } from '../dto';
 import { MealService } from '../../meal/service';
 import { MEAL_PLAN_RELATIONS } from '../constants';
 import { PaginationDto } from '../../../common/pagination/pagination.dto';
+import { createQueryObject } from '../../../common/pagination/helpers';
 
 @Injectable()
 export class MealPlanService {
@@ -39,16 +40,14 @@ export class MealPlanService {
     userId: number,
     paginationDto: PaginationDto,
   ): Promise<{ data: MealPlan[]; count: number }> {
-    const { limit, offset } = paginationDto;
+    const { order, take, skip } = createQueryObject(paginationDto);
 
     const [data, count] = await this.repository.findAndCount({
       where: { user: { id: userId } },
       relations: MEAL_PLAN_RELATIONS,
-      take: limit,
-      skip: offset,
-      order: {
-        createTimeStamp: 'DESC',
-      },
+      take,
+      skip,
+      ...(order && { order }),
     });
 
     return {
