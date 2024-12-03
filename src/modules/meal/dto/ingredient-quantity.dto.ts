@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsNotEmpty, Min, IsPositive } from 'class-validator';
+import { IsNumber, IsNotEmpty, IsPositive } from 'class-validator';
 
 export class IngredientQuantityDto {
   @IsNumber()

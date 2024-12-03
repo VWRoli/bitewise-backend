@@ -20,7 +20,7 @@ import { createQueryObject } from '../../../common/pagination/helpers';
 export class IngredientService {
   constructor(
     @InjectRepository(Ingredient)
-    private repository: Repository<Ingredient>,
+    private readonly repository: Repository<Ingredient>,
     private readonly userService: UserService,
   ) {}
 

@@ -7,14 +7,14 @@ import {
 export function IsBiggerThanSaturatedFat(
   validationOptions?: ValidationOptions,
 ) {
-  return function (object: Object, propertyName: string) {
+  return function (object: object, propertyName: string) {
     registerDecorator({
       name: 'IsBiggerThanSaturatedFat',
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
       validator: {
-        validate(value: any, args: ValidationArguments) {
+        validate(_: number, args: ValidationArguments) {
           const totalFat = args.object['totalFat'];
           const saturatedFat = args.object['saturatedFat'];
 

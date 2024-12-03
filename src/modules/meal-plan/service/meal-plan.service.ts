@@ -17,7 +17,7 @@ import { createQueryObject } from '../../../common/pagination/helpers';
 export class MealPlanService {
   constructor(
     @InjectRepository(MealPlan)
-    private repository: Repository<MealPlan>,
+    private readonly repository: Repository<MealPlan>,
     private readonly userService: UserService,
     private readonly mealService: MealService,
   ) {}

@@ -2,11 +2,12 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { ExpirationStrategy } from '../../token/enum';
+import { EExpirationStrategy } from '../../token/enum';
 import { CookieOptions, Response } from 'express';
 import { UserService } from '../../user/service';
 import { config } from '../../../config';
 import { User } from '../../auth/entities';
+import { THOUSAND } from 'src/modules/token/constants';
 
 @Injectable()
 export class TokenService {
@@ -14,14 +15,14 @@ export class TokenService {
   private readonly refreshTokenExpiration: number;
 
   constructor(
-    private jwtService: JwtService,
-    private config: ConfigService,
-    private userService: UserService,
+    private readonly jwtService: JwtService,
+    private readonly config: ConfigService,
+    private readonly userService: UserService,
   ) {
     this.accessTokenExpiration =
-      this.config.get('ACCESS_TOKEN_EXPIRATION') * 1000;
+      this.config.get('ACCESS_TOKEN_EXPIRATION') * THOUSAND;
     this.refreshTokenExpiration =
-      this.config.get('REFRESH_TOKEN_EXPIRATION') * 1000;
+      this.config.get('REFRESH_TOKEN_EXPIRATION') * THOUSAND;
   }
 
   async getTokens(
@@ -52,7 +53,7 @@ export class TokenService {
     refreshToken: string,
     res: Response,
     user: User,
-    expirationStrategy: ExpirationStrategy = ExpirationStrategy.DEFAULT,
+    expirationStrategy: EExpirationStrategy = EExpirationStrategy.DEFAULT,
   ) {
     this.setTokensAsCookies(accessToken, refreshToken, res, expirationStrategy);
 
@@ -63,7 +64,7 @@ export class TokenService {
     accessToken: string,
     refreshToken: string,
     res: Response,
-    expirationStrategy: ExpirationStrategy = ExpirationStrategy.DEFAULT,
+    expirationStrategy: EExpirationStrategy = EExpirationStrategy.DEFAULT,
   ) {
     const cookieOptions = this.getDefaultCookieOptions();
     const { accessExpiration, refreshExpiration } =
@@ -89,7 +90,7 @@ export class TokenService {
     };
   }
 
-  private calculateExpirationTimes(expirationStrategy: ExpirationStrategy): {
+  private calculateExpirationTimes(expirationStrategy: EExpirationStrategy): {
     accessExpiration: number;
     refreshExpiration: number;
   } {
@@ -98,7 +99,7 @@ export class TokenService {
     let accessExpiration = now + this.accessTokenExpiration;
     let refreshExpiration = now + this.refreshTokenExpiration;
 
-    if (expirationStrategy === ExpirationStrategy.IMMEDIATE) {
+    if (expirationStrategy === EExpirationStrategy.IMMEDIATE) {
       accessExpiration = refreshExpiration = now;
     }
 

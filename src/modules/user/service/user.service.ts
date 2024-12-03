@@ -3,13 +3,12 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../auth/entities';
 import { CreateSocialUserDto, UpdateUserDto } from '../dto';
-import { CreateUserDto } from 'src/modules/auth/dto';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private repository: Repository<User>,
+    private readonly repository: Repository<User>,
   ) {}
 
   async deleteOne(id: number) {

@@ -1,4 +1,4 @@
-export enum ExpirationStrategy {
+export enum EExpirationStrategy {
   IMMEDIATE = 'IMMEDIATE',
   DEFAULT = 'DEFAULT',
 }

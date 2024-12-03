@@ -8,6 +8,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { Match } from '../decorators';
+import { PASSWORD_MIN_LENGTH } from 'src/modules/auth/constants';
 
 export class CreateUserDto {
   @IsEmail()
@@ -18,7 +19,7 @@ export class CreateUserDto {
 
   @IsString()
   @IsNotEmpty()
-  @MinLength(8)
+  @MinLength(PASSWORD_MIN_LENGTH)
   @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
     message: 'Password too weak',
   })
@@ -27,8 +28,7 @@ export class CreateUserDto {
 
   @IsString()
   @IsNotEmpty()
-  @MinLength(8)
-  @Match('password', {
+  @Match<CreateUserDto>('password', {
     message: 'Passwords do not match',
   })
   @ApiProperty({ example: 'StrongPassword1', required: true })

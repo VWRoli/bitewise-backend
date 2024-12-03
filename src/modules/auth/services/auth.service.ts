@@ -10,7 +10,7 @@ import { User } from '../entities';
 import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
 import { UserService } from '../../user/service';
-import { ExpirationStrategy } from '../../token/enum';
+import { EExpirationStrategy } from '../../token/enum';
 import { TokenService } from '../../token/services';
 import { CreateSocialUserDto } from '../../user/dto';
 
@@ -18,9 +18,9 @@ import { CreateSocialUserDto } from '../../user/dto';
 export class AuthService {
   constructor(
     @InjectRepository(User)
-    private repository: Repository<User>,
-    private userService: UserService,
-    private tokenService: TokenService,
+    private readonly repository: Repository<User>,
+    private readonly userService: UserService,
+    private readonly tokenService: TokenService,
   ) {}
 
   async signUp(dto: CreateUserDto, res: Response) {
@@ -57,7 +57,7 @@ export class AuthService {
         res,
         savedUser,
       );
-    } catch (error) {
+    } catch {
       throw new InternalServerErrorException(
         'User creation failed due to a server error',
       );
@@ -99,7 +99,7 @@ export class AuthService {
       '',
       res,
       null,
-      ExpirationStrategy.IMMEDIATE,
+      EExpirationStrategy.IMMEDIATE,
     );
   }
 

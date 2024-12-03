@@ -26,7 +26,6 @@ export class CreateMealPlanDto {
 
   @ApiProperty({
     description: 'Array of meal IDs to be associated with the meal plan',
-    example: [1, 2, 3],
     required: true,
   })
   @IsArray()
