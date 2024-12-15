@@ -22,7 +22,7 @@ import {
   PaginatedIngredientDto,
 } from '../dto';
 import { CurrentUser } from '../../auth/decorators';
-import { User } from '../../auth/entities';
+import { User } from '../../user/entities';
 import { plainToClass } from 'class-transformer';
 import { PaginationDto } from '../../../common/pagination/pagination.dto';
 

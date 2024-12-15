@@ -1,4 +1,3 @@
-import { User } from '../../auth/entities';
 import {
   Column,
   CreateDateColumn,
@@ -11,7 +10,9 @@ import {
   RelationId,
   UpdateDateColumn,
 } from 'typeorm';
+
 import { MealPlanMeal } from './meal-plan-meal.entity';
+import { User } from '../../user/entities';
 
 @Entity()
 export class MealPlan {

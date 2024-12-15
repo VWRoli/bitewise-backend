@@ -1,13 +1,14 @@
+import { Meal, MealIngredient } from '../meal/entities';
+import { PersonalInformation, User } from '../user/entities';
+import { PersonalInformationService, UserService } from '../user/service';
+
+import { Ingredient } from '../ingredient/entities';
+import { MealPlan } from './entities';
+import { MealPlanController } from './controller';
+import { MealPlanService } from './service';
+import { MealService } from '../meal/service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../auth/entities';
-import { MealPlanController } from './controller';
-import { MealPlan } from './entities';
-import { MealPlanService } from './service';
-import { UserService } from '../user/service';
-import { Meal, MealIngredient } from '../meal/entities';
-import { MealService } from '../meal/service';
-import { Ingredient } from '../ingredient/entities';
 
 @Module({
   imports: [
@@ -17,9 +18,15 @@ import { Ingredient } from '../ingredient/entities';
       User,
       Ingredient,
       MealIngredient,
+      PersonalInformation,
     ]),
   ],
   controllers: [MealPlanController],
-  providers: [MealPlanService, UserService, MealService],
+  providers: [
+    MealPlanService,
+    UserService,
+    MealService,
+    PersonalInformationService,
+  ],
 })
 export class MealPlanModule {}

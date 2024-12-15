@@ -1,14 +1,16 @@
+import * as bcrypt from 'bcrypt';
+
 import { Test, TestingModule } from '@nestjs/testing';
+import { User, stubUser } from '../../user/entities';
+import { stubCreateUserDto, stubLoginUserDto } from '../dto';
+
 import { AuthController } from './auth.controller';
 import { AuthService } from '../services';
-import { stubCreateUserDto, stubLoginUserDto } from '../dto';
-import { ThrottlerGuard } from '@nestjs/throttler';
-import { User, stubUser } from '../entities';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
-import * as bcrypt from 'bcrypt';
+import { JwtModule } from '@nestjs/jwt';
 import { SALT_WORK_FACTOR } from '../../token/constants/token.constant';
+import { ThrottlerGuard } from '@nestjs/throttler';
+import { getRepositoryToken } from '@nestjs/typeorm';
 
 const userStub = stubUser();
 const loginUserStubDto = stubLoginUserDto();

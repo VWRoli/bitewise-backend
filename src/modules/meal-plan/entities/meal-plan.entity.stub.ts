@@ -1,5 +1,5 @@
-import { stubUser } from '../../auth/entities';
 import { MealPlan } from '.';
+import { stubUser } from '../../user/entities';
 
 export function stubMealPlan(): MealPlan {
   return {

@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { User } from '../modules/auth/entities';
+import { User } from '../modules/user/entities';
 
 declare global {
   namespace Express {

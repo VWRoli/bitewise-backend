@@ -1,14 +1,15 @@
-import { MealService } from './index';
-import { Meal, MealIngredient, stubMeal } from '../entities';
-import { Repository } from 'typeorm';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from '../../auth/entities';
-import { Test } from '@nestjs/testing';
 import { ConflictException, NotFoundException } from '@nestjs/common';
-import { UserService } from '../../user/service';
-import { serializeMeal } from '../serializers/meal.serializer';
-import { Ingredient, stubIngredient } from '../../ingredient/entities';
 import { CreateMealDto, UpdateMealDto } from '../dto';
+import { Ingredient, stubIngredient } from '../../ingredient/entities';
+import { Meal, MealIngredient, stubMeal } from '../entities';
+
+import { MealService } from './index';
+import { Repository } from 'typeorm';
+import { Test } from '@nestjs/testing';
+import { User } from '../../user/entities';
+import { UserService } from '../../user/service';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { serializeMeal } from '../serializers/meal.serializer';
 
 const mealStub = stubMeal();
 const mealStubs = [mealStub];

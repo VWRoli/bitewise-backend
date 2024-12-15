@@ -1,13 +1,15 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { EExpirationStrategy } from '../../token/enum';
+
 import { CookieOptions, Response } from 'express';
+import { HttpStatus, Injectable } from '@nestjs/common';
+
+import { ConfigService } from '@nestjs/config';
+import { EExpirationStrategy } from '../../token/enum';
+import { JwtService } from '@nestjs/jwt';
+import { THOUSAND } from 'src/modules/token/constants';
+import { User } from '../../user/entities';
 import { UserService } from '../../user/service';
 import { config } from '../../../config';
-import { User } from '../../auth/entities';
-import { THOUSAND } from 'src/modules/token/constants';
 
 @Injectable()
 export class TokenService {

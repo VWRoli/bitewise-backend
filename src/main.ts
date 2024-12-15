@@ -1,11 +1,12 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { initializeSwagger } from './swagger';
-import helmet from 'helmet';
-import { ValidationPipe } from '@nestjs/common';
-import { json } from 'express';
-import { config } from './config';
 import * as cookieParser from 'cookie-parser';
+
+import { AppModule } from './app.module';
+import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
+import { config } from './config';
+import helmet from 'helmet';
+import { initializeSwagger } from './swagger';
+import { json } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,7 +21,13 @@ async function bootstrap() {
   app.enableCors({ origin: config.FRONTEND_URL, credentials: true });
 
   //validation pipeline
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
 
   app.use(json({ limit: '20kb' }));
 

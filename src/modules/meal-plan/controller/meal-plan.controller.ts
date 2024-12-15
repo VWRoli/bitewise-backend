@@ -22,7 +22,7 @@ import {
 } from '../dto';
 import { MealPlanService } from '../service';
 import { CurrentUser } from '../../auth/decorators';
-import { User } from '../../auth/entities';
+import { User } from '../../user/entities';
 import { serializeMealPlan } from '../serializers';
 import { PaginationDto } from '../../../common/pagination/pagination.dto';
 

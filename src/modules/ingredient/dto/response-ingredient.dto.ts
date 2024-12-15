@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { User } from '../../auth/entities';
+import { User } from '../../user/entities';
 
 export class IngredientResponseDto {
   @ApiProperty({

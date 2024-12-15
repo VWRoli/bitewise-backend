@@ -1,17 +1,20 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
   HttpCode,
   HttpStatus,
+  Patch,
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UserService } from '../service';
 import { JwtGuard } from '../../auth/guard';
 import { CurrentUser } from '../../auth/decorators';
-import { User } from '../../auth/entities';
+import { User } from '../entities';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import { UpdateUserDto } from '../dto';
 
 @ApiTags('users')
 @UseGuards(JwtGuard, ThrottlerGuard)
@@ -22,6 +25,15 @@ export class UserController {
   getMe(@CurrentUser() currentUser: User) {
     const user = currentUser;
     delete user.refreshToken;
+    return user;
+  }
+
+  @Patch('me')
+  async updateMe(@CurrentUser() currentUser: User, @Body() updateUserDto: any) {
+    //TODO: Change any to UpdateUserDto
+    const user = await this.userService.update(currentUser.id, updateUserDto);
+    delete user.refreshToken;
+    delete user.hash;
     return user;
   }
 

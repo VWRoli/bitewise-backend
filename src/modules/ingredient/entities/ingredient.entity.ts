@@ -1,5 +1,3 @@
-import { EUnit } from '../enum';
-import { User } from '../../auth/entities';
 import {
   Column,
   CreateDateColumn,
@@ -12,7 +10,10 @@ import {
   RelationId,
   UpdateDateColumn,
 } from 'typeorm';
+
+import { EUnit } from '../enum';
 import { MealIngredient } from '../../meal/entities';
+import { User } from '../../user/entities';
 import { decimalTransformer } from '../../../common/transformers';
 
 @Entity()

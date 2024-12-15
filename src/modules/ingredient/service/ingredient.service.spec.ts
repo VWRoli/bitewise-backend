@@ -1,11 +1,12 @@
-import { IngredientService } from './index';
-import { Ingredient, stubIngredient } from '../entities';
-import { Repository } from 'typeorm';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from '../../auth/entities';
-import { Test } from '@nestjs/testing';
 import { ConflictException, NotFoundException } from '@nestjs/common';
+import { Ingredient, stubIngredient } from '../entities';
+
+import { IngredientService } from './index';
+import { Repository } from 'typeorm';
+import { Test } from '@nestjs/testing';
+import { User } from '../../user/entities';
 import { UserService } from '../../user/service';
+import { getRepositoryToken } from '@nestjs/typeorm';
 
 const ingredientStub = stubIngredient();
 let ingredientResponseStub = stubIngredient();

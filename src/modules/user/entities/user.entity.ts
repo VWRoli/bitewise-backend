@@ -1,15 +1,19 @@
-import { IsEmail } from 'class-validator';
-import { Ingredient } from '../../ingredient/entities';
 import {
-  Entity,
   Column,
   CreateDateColumn,
-  UpdateDateColumn,
-  PrimaryGeneratedColumn,
   DeleteDateColumn,
+  Entity,
+  JoinColumn,
   OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
+
+import { Ingredient } from '../../ingredient/entities';
+import { IsEmail } from 'class-validator';
 import { Meal } from '../../meal/entities';
+import { PersonalInformation } from './personal-information.entity';
 
 @Entity()
 export class User {
@@ -28,6 +32,10 @@ export class User {
 
   @Column({ default: null })
   refreshToken: string | null;
+
+  @OneToOne(() => PersonalInformation, { cascade: false, eager: true })
+  @JoinColumn()
+  personalInformation: PersonalInformation;
 
   @Column({ nullable: true })
   hash: string;

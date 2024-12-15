@@ -1,12 +1,13 @@
-import { Repository } from 'typeorm';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Test } from '@nestjs/testing';
 import { Ingredient, stubIngredient } from '../entities';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+
 import { IngredientController } from './ingredient.controller';
 import { IngredientService } from '../service';
-import { User } from '../../auth/entities';
+import { Repository } from 'typeorm';
+import { Test } from '@nestjs/testing';
+import { User } from '../../user/entities';
 import { UserService } from '../../user/service';
+import { getRepositoryToken } from '@nestjs/typeorm';
 
 const ingredientResponseStub = stubIngredient();
 const ingredientResponseStubs = [ingredientResponseStub];

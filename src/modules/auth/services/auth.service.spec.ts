@@ -1,15 +1,17 @@
-import { stubUser } from '../entities';
-import { Repository } from 'typeorm';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from '../entities';
-import { Test } from '@nestjs/testing';
-import { AuthService } from './auth.service';
-import { JwtModule, JwtService } from '@nestjs/jwt';
-import { ConfigModule } from '@nestjs/config';
-import { CreateUserDto, LoginUserDto } from '../dto';
-import { ForbiddenException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+
+import { CreateUserDto, LoginUserDto } from '../dto';
+import { JwtModule, JwtService } from '@nestjs/jwt';
+
+import { AuthService } from './auth.service';
+import { ConfigModule } from '@nestjs/config';
 import { ConfigService } from '@nestjs/config';
+import { ForbiddenException } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { Test } from '@nestjs/testing';
+import { User } from '../../user/entities';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { stubUser } from '../../user/entities';
 
 const userStub = stubUser();
 const signedToken = 'signed-jwt-token';

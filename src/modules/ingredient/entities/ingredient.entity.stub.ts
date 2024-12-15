@@ -1,6 +1,6 @@
 import { EUnit } from '../enum';
-import { stubUser } from '../../auth/entities';
 import { Ingredient } from '../entities';
+import { stubUser } from '../../user/entities';
 
 export function stubIngredient(override: Partial<Ingredient> = {}): Ingredient {
   return {

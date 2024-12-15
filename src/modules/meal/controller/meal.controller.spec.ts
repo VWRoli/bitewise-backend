@@ -1,15 +1,16 @@
-import { Repository } from 'typeorm';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Test } from '@nestjs/testing';
 import { Meal, MealIngredient, stubMeal } from '../entities';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+
+import { CreateMealDto } from '../dto';
+import { Ingredient } from '../../ingredient/entities';
 import { MealController } from './meal.controller';
 import { MealService } from '../service';
-import { User } from '../../auth/entities';
+import { Repository } from 'typeorm';
+import { Test } from '@nestjs/testing';
+import { User } from '../../user/entities';
 import { UserService } from '../../user/service';
-import { Ingredient } from '../../ingredient/entities';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { serializeMeal } from '../serializers/meal.serializer';
-import { CreateMealDto } from '../dto';
 
 const mealStub = stubMeal();
 const mealResponseStub = serializeMeal(mealStub);
