@@ -1,22 +1,30 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+import { ApiProperty } from '@nestjs/swagger';
+
 @Entity()
 export class PersonalInformation {
+  @ApiProperty({ example: 1 })
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column({ unique: false, nullable: true })
+  @ApiProperty({ example: 'john_doe' })
+  @Column({ unique: false, nullable: true, default: '' })
   userName?: string;
 
-  @Column({ nullable: true })
+  @ApiProperty({ example: 'John' })
+  @Column({ nullable: true, default: '' })
   firstName?: string;
 
-  @Column({ nullable: true })
+  @ApiProperty({ example: 'Doe' })
+  @Column({ nullable: true, default: '' })
   lastName?: string;
 
-  @Column({ nullable: true })
+  @ApiProperty({ example: '+1234567890' })
+  @Column({ nullable: true, default: '' })
   phone?: string;
 
+  @ApiProperty({ example: '1990-01-01' })
   @Column({ type: 'date', nullable: true })
   dateOfBirth?: string;
 }

@@ -8,7 +8,7 @@ import {
   Patch,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from '../service';
 import { JwtGuard } from '../../auth/guard';
 import { CurrentUser } from '../../auth/decorators';
@@ -22,6 +22,7 @@ import { UpdateUserDto } from '../dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @Get('me')
+  @ApiOkResponse({ type: User })
   getMe(@CurrentUser() currentUser: User) {
     const user = currentUser;
     delete user.refreshToken;
@@ -29,8 +30,11 @@ export class UserController {
   }
 
   @Patch('me')
-  async updateMe(@CurrentUser() currentUser: User, @Body() updateUserDto: any) {
-    //TODO: Change any to UpdateUserDto
+  @ApiOkResponse({ type: User })
+  async updateMe(
+    @CurrentUser() currentUser: User,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
     const user = await this.userService.update(currentUser.id, updateUserDto);
     delete user.refreshToken;
     delete user.hash;
