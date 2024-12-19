@@ -1,6 +1,7 @@
 import { IsOptional, IsString } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 
 export class PersonalInformationDto {
   @ApiProperty({ description: 'Username of the user', example: 'john_doe' })
@@ -33,5 +34,8 @@ export class PersonalInformationDto {
   })
   @IsOptional()
   @IsString()
+  @Transform(({ value }) =>
+    value ? new Date(value).toISOString().split('T')[0] : value,
+  )
   dateOfBirth?: string;
 }
