@@ -1,15 +1,13 @@
-import { PersonalInformation, User } from '../user/entities';
-import { PersonalInformationService, UserService } from '../user/service';
-
 import { Ingredient } from './entities';
 import { IngredientController } from './controller';
 import { IngredientService } from './service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Ingredient, User, PersonalInformation])],
+  imports: [TypeOrmModule.forFeature([Ingredient]), UserModule],
   controllers: [IngredientController],
-  providers: [IngredientService, UserService, PersonalInformationService],
+  providers: [IngredientService],
 })
 export class IngredientModule {}
