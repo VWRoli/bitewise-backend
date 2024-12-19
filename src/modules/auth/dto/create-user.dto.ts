@@ -1,14 +1,14 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
 import {
   IsEmail,
   IsNotEmpty,
   IsString,
-  Matches,
-  MinLength,
+  IsStrongPassword,
 } from 'class-validator';
+
+import { ApiProperty } from '@nestjs/swagger';
 import { Match } from '../decorators';
 import { PASSWORD_MIN_LENGTH } from 'src/modules/auth/constants';
+import { Transform } from 'class-transformer';
 
 export class CreateUserDto {
   @IsEmail()
@@ -19,9 +19,12 @@ export class CreateUserDto {
 
   @IsString()
   @IsNotEmpty()
-  @MinLength(PASSWORD_MIN_LENGTH)
-  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: 'Password too weak',
+  @IsStrongPassword({
+    minLength: PASSWORD_MIN_LENGTH,
+    minLowercase: 1,
+    minNumbers: 1,
+    minSymbols: 1,
+    minUppercase: 1,
   })
   @ApiProperty({ example: 'StrongPassword1', required: true })
   readonly password: string;

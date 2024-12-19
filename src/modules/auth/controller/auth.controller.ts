@@ -9,13 +9,14 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { CreateUserDto, LoginUserDto } from '../dto';
+import { CreateUserDto, LoginUserDto, ChangePasswordDto } from '../dto';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../services';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { Response } from 'express';
 import { FacebookAuthGuard, GoogleAuthGuard } from '../guard';
 import { config } from 'src/config';
+import { CurrentUser } from '../decorators';
 
 @UseGuards(ThrottlerGuard)
 @ApiTags('auth')
@@ -62,5 +63,13 @@ export class AuthController {
 
     await this.authService.facebookSignIn(user, res);
     res.redirect(`${config.FRONTEND_URL}/dashboard?token=${req.accessToken}`);
+  }
+
+  @Post('change-password')
+  changePassword(
+    @CurrentUser('sub') id: number,
+    @Body() dto: ChangePasswordDto,
+  ) {
+    return this.authService.changePassword(dto, id);
   }
 }

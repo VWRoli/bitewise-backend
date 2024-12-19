@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserDto, LoginUserDto } from '../dto';
+import { CreateUserDto, LoginUserDto, ChangePasswordDto } from '../dto';
 import { User } from '../../user/entities';
 import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
@@ -145,5 +145,18 @@ export class AuthService {
     await this.tokenService.updateRefreshTokenHash(user.id, refreshToken);
 
     return this.tokenService.setTokensAsCookies(accessToken, refreshToken, res);
+  }
+
+  async changePassword(dto: ChangePasswordDto, id: number) {
+    const user = await this.userService.findById(id);
+
+    const pwMatches = await bcrypt.compare(dto.oldPassword, user.hash);
+    if (!pwMatches) throw new ForbiddenException('Old password is incorrect');
+
+    const hash = await this.tokenService.hashString(dto.password);
+
+    await this.userService.update(user.id, { hash });
+
+    return { message: 'Password updated successfully' };
   }
 }

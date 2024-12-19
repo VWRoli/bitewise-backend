@@ -16,6 +16,10 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ApiProperty({ description: 'Google ID of the user' })
   readonly googleId?: string;
 
+  @IsString()
+  @IsOptional()
+  hash?: string;
+
   @IsOptional()
   @ValidateNested()
   @Type(() => PersonalInformationDto)

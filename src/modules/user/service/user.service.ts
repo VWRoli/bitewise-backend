@@ -115,6 +115,12 @@ export class UserService {
     return user;
   }
 
+  async findById(id: number) {
+    const user = this.repository.findOne({ where: { id } });
+    if (!user) throw new NotFoundException();
+    return user;
+  }
+
   async createUser(user: CreateSocialUserDto) {
     return this.repository.save(user);
   }
