@@ -3,6 +3,7 @@ import { IsOptional, IsString, ValidateNested } from 'class-validator';
 
 import { CreateUserDto } from '../../auth/dto';
 import { PersonalInformationDto } from './personal-information.dto';
+import { SocialProfilesDto } from './social-profiles.dto';
 import { Type } from 'class-transformer';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
@@ -20,4 +21,10 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @Type(() => PersonalInformationDto)
   @ApiProperty({ type: PersonalInformationDto })
   personalInformation?: PersonalInformationDto;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => SocialProfilesDto)
+  @ApiProperty({ type: SocialProfilesDto })
+  socialProfiles?: SocialProfilesDto;
 }

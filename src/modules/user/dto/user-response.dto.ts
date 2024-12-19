@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { PersonalInformationDto } from './personal-information.dto';
+import { SocialProfilesDto } from './social-profiles.dto';
 
 export class UserResponseDto {
   @ApiProperty({ example: 1 })
@@ -10,6 +11,9 @@ export class UserResponseDto {
 
   @ApiProperty({ type: () => PersonalInformationDto })
   personalInformation: PersonalInformationDto;
+
+  @ApiProperty({ type: () => SocialProfilesDto })
+  socialProfiles: SocialProfilesDto;
 
   @ApiProperty({ example: null, nullable: true })
   googleId: string;

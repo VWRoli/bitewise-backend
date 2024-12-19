@@ -3,7 +3,8 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities';
 import { CreateSocialUserDto, UpdateUserDto } from '../dto';
-import { PersonalInformationService } from 'src/modules/user/service/personal-information.service';
+import { PersonalInformationService } from './personal-information.service';
+import { SocialProfilesService } from './social-profiles.service';
 
 @Injectable()
 export class UserService {
@@ -11,6 +12,7 @@ export class UserService {
     @InjectRepository(User)
     private readonly repository: Repository<User>,
     private readonly personalInformationService: PersonalInformationService,
+    private readonly socialProfilesService: SocialProfilesService,
   ) {}
 
   async deleteOne(id: number) {
@@ -35,10 +37,11 @@ export class UserService {
       },
     });
 
-    const updatedUser = await this.createOrUpdatePersonalInformation(
+    let updatedUser = await this.createOrUpdatePersonalInformation(
       data,
       currentUser,
     );
+    updatedUser = await this.createOrUpdateSocialProfiles(data, currentUser);
 
     Object.assign(updatedUser, data);
 
@@ -66,6 +69,29 @@ export class UserService {
           );
 
         user.personalInformation = newPersonalInformation;
+      }
+    }
+    return user;
+  }
+
+  private async createOrUpdateSocialProfiles(
+    data: UpdateUserDto,
+    currentUser: User,
+  ) {
+    const user: User = currentUser;
+
+    if (data.socialProfiles) {
+      if (user.socialProfiles && user.socialProfiles.id) {
+        await this.socialProfilesService.updateOne(
+          user.socialProfiles.id,
+          data.socialProfiles,
+        );
+      } else {
+        const newSocialProfiles = await this.socialProfilesService.createOne(
+          data.socialProfiles,
+        );
+
+        user.socialProfiles = newSocialProfiles;
       }
     }
     return user;
