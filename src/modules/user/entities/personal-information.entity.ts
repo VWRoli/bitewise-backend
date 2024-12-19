@@ -15,7 +15,7 @@ export class PersonalInformation {
   lastName?: string;
 
   @Column({ nullable: true, default: '' })
-  phone?: string;
+  phoneNumber?: string;
 
   @Column({ type: 'date', nullable: true })
   dateOfBirth?: string;
