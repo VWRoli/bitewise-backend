@@ -5,6 +5,7 @@ import { User } from '../entities';
 import { CreateSocialUserDto, UpdateUserDto } from '../dto';
 import { PersonalInformationService } from './personal-information.service';
 import { SocialProfilesService } from './social-profiles.service';
+import { NotificationSettingsService } from './notifications.service';
 
 @Injectable()
 export class UserService {
@@ -13,6 +14,7 @@ export class UserService {
     private readonly repository: Repository<User>,
     private readonly personalInformationService: PersonalInformationService,
     private readonly socialProfilesService: SocialProfilesService,
+    private readonly notificationSettingsService: NotificationSettingsService,
   ) {}
 
   async deleteOne(id: number) {
@@ -42,6 +44,10 @@ export class UserService {
       currentUser,
     );
     updatedUser = await this.createOrUpdateSocialProfiles(data, currentUser);
+    updatedUser = await this.createOrUpdateNotificationSettings(
+      data,
+      currentUser,
+    );
 
     Object.assign(updatedUser, data);
 
@@ -92,6 +98,30 @@ export class UserService {
         );
 
         user.socialProfiles = newSocialProfiles;
+      }
+    }
+    return user;
+  }
+
+  private async createOrUpdateNotificationSettings(
+    data: UpdateUserDto,
+    currentUser: User,
+  ) {
+    const user: User = currentUser;
+
+    if (data.notificationSettings) {
+      if (user.notificationSettings && user.notificationSettings.id) {
+        await this.notificationSettingsService.updateOne(
+          user.notificationSettings.id,
+          data.notificationSettings,
+        );
+      } else {
+        const newNotificationSettings =
+          await this.notificationSettingsService.createOne(
+            data.notificationSettings,
+          );
+
+        user.notificationSettings = newNotificationSettings;
       }
     }
     return user;

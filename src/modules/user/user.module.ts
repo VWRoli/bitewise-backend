@@ -1,5 +1,11 @@
-import { PersonalInformation, SocialProfiles, User } from './entities';
 import {
+  NotificationSettings,
+  PersonalInformation,
+  SocialProfiles,
+  User,
+} from './entities';
+import {
+  NotificationSettingsService,
   PersonalInformationService,
   SocialProfilesService,
   UserService,
@@ -11,10 +17,25 @@ import { UserController } from './controller';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, PersonalInformation, SocialProfiles]),
+    TypeOrmModule.forFeature([
+      User,
+      PersonalInformation,
+      SocialProfiles,
+      NotificationSettings,
+    ]),
   ],
   controllers: [UserController],
-  providers: [UserService, PersonalInformationService, SocialProfilesService],
-  exports: [UserService, PersonalInformationService, SocialProfilesService],
+  providers: [
+    UserService,
+    PersonalInformationService,
+    SocialProfilesService,
+    NotificationSettingsService,
+  ],
+  exports: [
+    UserService,
+    PersonalInformationService,
+    SocialProfilesService,
+    NotificationSettingsService,
+  ],
 })
 export class UserModule {}

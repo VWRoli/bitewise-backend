@@ -2,6 +2,7 @@ import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsOptional, IsString, ValidateNested } from 'class-validator';
 
 import { CreateUserDto } from '../../auth/dto';
+import { NotificationSettingsDto } from './notifications.dto';
 import { PersonalInformationDto } from './personal-information.dto';
 import { SocialProfilesDto } from './social-profiles.dto';
 import { Type } from 'class-transformer';
@@ -31,4 +32,10 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @Type(() => SocialProfilesDto)
   @ApiProperty({ type: SocialProfilesDto })
   socialProfiles?: SocialProfilesDto;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => NotificationSettingsDto)
+  @ApiProperty({ type: NotificationSettingsDto })
+  notificationSettings?: NotificationSettingsDto;
 }

@@ -13,8 +13,9 @@ import {
 import { Ingredient } from '../../ingredient/entities';
 import { IsEmail } from 'class-validator';
 import { Meal } from '../../meal/entities';
+import { NotificationSettings } from './notifications.entity';
 import { PersonalInformation } from './personal-information.entity';
-import { SocialProfiles } from 'src/modules/user/entities/social-profiles.entity';
+import { SocialProfiles } from './social-profiles.entity';
 
 @Entity()
 export class User {
@@ -41,6 +42,10 @@ export class User {
   @OneToOne(() => SocialProfiles, { cascade: false, eager: true })
   @JoinColumn()
   socialProfiles: SocialProfiles;
+
+  @OneToOne(() => NotificationSettings, { cascade: false, eager: true })
+  @JoinColumn()
+  notificationSettings: NotificationSettings;
 
   @Column({ nullable: true })
   hash: string;

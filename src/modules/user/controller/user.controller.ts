@@ -14,8 +14,7 @@ import { JwtGuard } from '../../auth/guard';
 import { CurrentUser } from '../../auth/decorators';
 import { User } from '../entities';
 import { ThrottlerGuard } from '@nestjs/throttler';
-import { UpdateUserDto } from '../dto';
-import { UserResponseDto } from 'src/modules/user/dto/user-response.dto';
+import { UpdateUserDto, UserResponseDto } from '../dto';
 
 @ApiTags('users')
 @UseGuards(JwtGuard, ThrottlerGuard)

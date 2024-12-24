@@ -9,6 +9,7 @@ export function stubUser(override: Partial<User> = {}): User {
     meals: [],
     personalInformation: null,
     socialProfiles: null,
+    notificationSettings: null,
     refreshToken: null,
     googleId: null,
     createTimeStamp: new Date(),
