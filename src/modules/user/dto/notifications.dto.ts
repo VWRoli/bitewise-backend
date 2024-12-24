@@ -19,7 +19,7 @@ export class NotificationSettingsDto {
   })
   @IsOptional()
   @IsBoolean()
-  communicationsEmail?: boolean;
+  communicationEmail?: boolean;
 
   @ApiProperty({
     example: true,

@@ -9,7 +9,7 @@ export class NotificationSettings {
   defaultEmailAddress?: string;
 
   @Column({ nullable: true, default: false })
-  communicationsEmail?: boolean;
+  communicationEmail?: boolean;
 
   @Column({ nullable: true, default: false })
   marketingEmail?: boolean;
