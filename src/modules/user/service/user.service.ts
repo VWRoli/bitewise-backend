@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities';
@@ -6,6 +11,7 @@ import { CreateSocialUserDto, UpdateUserDto } from '../dto';
 import { PersonalInformationService } from './personal-information.service';
 import { SocialProfilesService } from './social-profiles.service';
 import { NotificationSettingsService } from './notifications.service';
+import { StorageService } from '../../storage/storage.service';
 
 @Injectable()
 export class UserService {
@@ -15,6 +21,7 @@ export class UserService {
     private readonly personalInformationService: PersonalInformationService,
     private readonly socialProfilesService: SocialProfilesService,
     private readonly notificationSettingsService: NotificationSettingsService,
+    private readonly storageService: StorageService,
   ) {}
 
   async deleteOne(id: number) {
@@ -125,6 +132,24 @@ export class UserService {
       }
     }
     return user;
+  }
+
+  public async uploadAvatar(
+    file: Express.Multer.File,
+    userId: number,
+  ): Promise<User> {
+    if (!file) throw new BadRequestException('Uploading a file is required');
+
+    const cloudStoragePath = await this.storageService.uploadFile(file);
+
+    if (!cloudStoragePath)
+      throw new ServiceUnavailableException(
+        'Failed to upload file to Google Cloud Storage',
+      );
+
+    const user = await this.findById(userId);
+    user.avatarUrl = cloudStoragePath;
+    return this.repository.save(user);
   }
 
   async validateUser(userId: number) {

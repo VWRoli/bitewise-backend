@@ -12,6 +12,7 @@ import {
 } from './service';
 
 import { Module } from '@nestjs/common';
+import { StorageService } from '../storage/storage.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserController } from './controller';
 
@@ -30,12 +31,14 @@ import { UserController } from './controller';
     PersonalInformationService,
     SocialProfilesService,
     NotificationSettingsService,
+    StorageService,
   ],
   exports: [
     UserService,
     PersonalInformationService,
     SocialProfilesService,
     NotificationSettingsService,
+    StorageService,
   ],
 })
 export class UserModule {}

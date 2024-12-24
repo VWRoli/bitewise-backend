@@ -31,6 +31,11 @@ export const config: IConfig = {
     FACEBOOK_SECRET: process.env.FACEBOOK_SECRET,
     FACEBOOK_CALLBACK_URL: process.env.FACEBOOK_CALLBACK_URL,
   },
+  GCP: {
+    GCP_PROJECT_ID: process.env.GCP_PROJECT_ID,
+    GCP_PRIVATE_KEY_FILE: process.env.GCP_PRIVATE_KEY_FILE,
+    GCP_BUCKET_NAME: process.env.GCP_BUCKET_NAME,
+  },
 };
 
 export interface IConfig {
@@ -63,5 +68,10 @@ export interface IConfig {
     FACEBOOK_CLIENT_ID: string;
     FACEBOOK_SECRET: string;
     FACEBOOK_CALLBACK_URL: string;
+  };
+  GCP: {
+    GCP_PROJECT_ID: string;
+    GCP_PRIVATE_KEY_FILE: string;
+    GCP_BUCKET_NAME: string;
   };
 }

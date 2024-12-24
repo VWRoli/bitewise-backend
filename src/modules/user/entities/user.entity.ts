@@ -51,6 +51,9 @@ export class User {
   hash: string;
 
   @Column({ nullable: true })
+  avatarUrl: string;
+
+  @Column({ nullable: true })
   googleId: string;
 
   @CreateDateColumn()
