@@ -6,25 +6,23 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EExpirationStrategy } from '../../token/enum';
 import { JwtService } from '@nestjs/jwt';
-import { THOUSAND } from 'src/modules/token/constants';
 import { User } from '../../user/entities';
 import { UserService } from '../../user/service';
 import { config } from '../../../config';
+import parse from 'parse-duration';
 
 @Injectable()
 export class TokenService {
-  private readonly accessTokenExpiration: number;
-  private readonly refreshTokenExpiration: number;
+  private readonly accessTokenExpiration: string;
+  private readonly refreshTokenExpiration: string;
 
   constructor(
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
     private readonly userService: UserService,
   ) {
-    this.accessTokenExpiration =
-      this.config.get('ACCESS_TOKEN_EXPIRATION') * THOUSAND;
-    this.refreshTokenExpiration =
-      this.config.get('REFRESH_TOKEN_EXPIRATION') * THOUSAND;
+    this.accessTokenExpiration = this.config.get('ACCESS_TOKEN_EXPIRATION');
+    this.refreshTokenExpiration = this.config.get('REFRESH_TOKEN_EXPIRATION');
   }
 
   async getTokens(
@@ -32,6 +30,7 @@ export class TokenService {
     email: string,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const payload = { email, sub: id };
+
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         expiresIn: this.accessTokenExpiration,
@@ -98,8 +97,8 @@ export class TokenService {
   } {
     const now = Date.now();
 
-    let accessExpiration = now + this.accessTokenExpiration;
-    let refreshExpiration = now + this.refreshTokenExpiration;
+    let accessExpiration = now + parse(this.accessTokenExpiration);
+    let refreshExpiration = now + parse(this.refreshTokenExpiration);
 
     if (expirationStrategy === EExpirationStrategy.IMMEDIATE) {
       accessExpiration = refreshExpiration = now;

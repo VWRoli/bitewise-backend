@@ -103,6 +103,24 @@ export class AuthService {
     );
   }
 
+  public async refresh(req, res: Response) {
+    const user = req.user;
+
+    const { accessToken, refreshToken } = await this.tokenService.getTokens(
+      user.id,
+      user.email,
+    );
+
+    await this.tokenService.updateRefreshTokenHash(user.id, refreshToken);
+
+    return this.tokenService.returnTokensAsCookies(
+      accessToken,
+      refreshToken,
+      res,
+      user,
+    );
+  }
+
   public async validateSocialUser(socialUser: CreateSocialUserDto) {
     const user = await this.userService.findByEmail(socialUser.email);
 
