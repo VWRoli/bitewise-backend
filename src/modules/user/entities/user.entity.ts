@@ -10,6 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+import { Exclude } from 'class-transformer';
 import { Ingredient } from '../../ingredient/entities';
 import { IsEmail } from 'class-validator';
 import { Meal } from '../../meal/entities';
@@ -32,6 +33,7 @@ export class User {
   @OneToMany(() => Meal, (meal) => meal.user)
   meals: Meal[];
 
+  @Exclude()
   @Column({ default: null })
   refreshToken: string | null;
 
@@ -47,6 +49,7 @@ export class User {
   @JoinColumn()
   notificationSettings: NotificationSettings;
 
+  @Exclude()
   @Column({ nullable: true })
   hash: string;
 

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { NotificationSettingsDto } from 'src/modules/user/dto/notifications.dto';
 import { PersonalInformationDto } from './personal-information.dto';
 import { SocialProfilesDto } from './social-profiles.dto';
 
@@ -14,6 +15,9 @@ export class UserResponseDto {
 
   @ApiProperty({ type: () => SocialProfilesDto })
   socialProfiles: SocialProfilesDto;
+
+  @ApiProperty({ type: () => NotificationSettingsDto })
+  notificationSettings: NotificationSettingsDto;
 
   @ApiProperty({ example: null, nullable: true })
   googleId: string;

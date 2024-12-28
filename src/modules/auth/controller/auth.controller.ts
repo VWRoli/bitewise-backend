@@ -14,12 +14,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../services';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { Response } from 'express';
-import {
-  FacebookAuthGuard,
-  GoogleAuthGuard,
-  JwtGuard,
-  RefreshJwtGuard,
-} from '../guard';
+import { FacebookAuthGuard, GoogleAuthGuard, RefreshJwtGuard } from '../guard';
 import { config } from 'src/config';
 import { CurrentUser } from '../decorators';
 
@@ -37,7 +32,6 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('signin')
-  @UseGuards(JwtGuard)
   signin(@Body() dto: LoginUserDto, @Res() res: Response) {
     return this.authService.signIn(dto, res);
   }

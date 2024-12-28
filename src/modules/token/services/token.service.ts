@@ -10,6 +10,7 @@ import { User } from '../../user/entities';
 import { UserService } from '../../user/service';
 import { config } from '../../../config';
 import parse from 'parse-duration';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class TokenService {
@@ -117,10 +118,8 @@ export class TokenService {
   }
 
   private sendResponse(res: Response, user: User): Response {
-    delete user.hash;
-    delete user.refreshToken;
-
-    return res.status(HttpStatus.OK).json(user);
+    const result = plainToInstance(User, user);
+    return res.status(HttpStatus.OK).json(result);
   }
 
   async updateRefreshTokenHash(

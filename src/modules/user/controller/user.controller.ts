@@ -19,6 +19,7 @@ import { User } from '../entities';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { UpdateUserDto, UserResponseDto } from '../dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { UserInterceptor } from '../interceptors';
 
 @ApiTags('users')
 @UseGuards(JwtGuard, ThrottlerGuard)
@@ -26,23 +27,20 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @Get('me')
+  @UseInterceptors(UserInterceptor)
   @ApiOkResponse({ type: UserResponseDto })
   async getMe(@CurrentUser() currentUser: User): Promise<UserResponseDto> {
-    const user = currentUser;
-    delete user.refreshToken;
-    return user;
+    return currentUser;
   }
 
   @Patch('me')
+  @UseInterceptors(UserInterceptor)
   @ApiOkResponse({ type: UserResponseDto })
   async updateMe(
     @CurrentUser() currentUser: User,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserResponseDto> {
-    const user = await this.userService.update(currentUser.id, updateUserDto);
-    delete user.refreshToken;
-    delete user.hash;
-    return user;
+    return this.userService.update(currentUser.id, updateUserDto);
   }
 
   @Delete('me')
@@ -58,9 +56,6 @@ export class UserController {
     @UploadedFile() file: Express.Multer.File,
     @CurrentUser() user: User,
   ): Promise<UserResponseDto> {
-    const updatedUser = await this.userService.uploadAvatar(file, user.id);
-    delete updatedUser.refreshToken;
-    delete updatedUser.hash;
-    return updatedUser;
+    return await this.userService.uploadAvatar(file, user.id);
   }
 }
